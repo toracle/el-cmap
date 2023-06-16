@@ -1,0 +1,45 @@
+#+BEGIN_SRC dot :file sample-graph.png
+  digraph {
+      node [shape=record, fillcolor="#eeeeee", style="rounded,filled", fontname="Liberation Serif"];
+      edge [fontname="Liberation Serif", splines=true, fontsize=12, fontcolor="#777777"];
+
+      "Gerald Weinberg" -> "leadership" [label="defines"];
+      "leadership" -> "process" [label="is a"];
+      "process" -> "environment" [label="creating an"];
+      "environment" -> "people" [label="in which"];
+      "people" -> "empowered" [label="become"];
+      "people" -> "strength" [label="who has"];
+      "strength" -> "motivator" [label="as a"];
+      "strength" -> "organizer" [label="as a"];
+      "strength" -> "problem-solver" [label="as a"];
+  }
+#+END_SRC
+
+#+RESULTS:
+[[file:sample-graph.png]]
+
+#+BEGIN_SRC elisp
+  '(:config (:graph nil
+             :node (:shape "record"
+                    :fillcolor "#eeeeee")
+             :edge nil)
+    :digraph (:nodes (("Gerald Weinberg" "Gerald Weinberg")
+                      ("leadership" "leadership")
+                      ("process" "process")
+                      ("environment" "environment")
+                      ("people" "people")
+                      ("strength" "strength")
+                      ("motivator" "motivator")
+                      ("organizer" "organizer")
+                      ("problem-solver" "problem-solver"))
+              :edges (("Gerald Weinberg" "leadership" "defines")
+                      ("leadership" "process" "is a")
+                      ("process" "environment" "creating an")
+                      ("environment" "people" "in which")
+                      ("people" "empowered" "become")
+                      ("people" "strength" "who has")
+                      ("strength" "motivator" "as a")
+                      ("strength" "organizer" "as a")
+                      ("strength" "problem-solver" "as a")
+                      )))
+#+END_SRC
