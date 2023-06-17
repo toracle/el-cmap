@@ -10,16 +10,16 @@
   `(,id ,label))
 
 
-(defun cmap-render-digraph (graph)
+(defun cmap-repr-digraph (graph)
   (let* ((digraph (plist-get graph :digraph))
          (nodes (plist-get digraph :nodes))
          (edges (plist-get digraph :edges)))
-    (format "digraph {\n%s\n%s}\n"
-            (cmap-render-nodes nodes)
-            (cmap-render-edges edges))))
+    (format "digraph {\n%s\n%s\n}\n"
+            (cmap-repr-nodes nodes)
+            (cmap-repr-edges edges))))
 
 
-(defun cmap-render-node (node)
+(defun cmap-repr-node (node)
   (let ((result nil))
     (add-to-list 'result (format (car node) "%s"))
     (when (cdr node)
@@ -30,11 +30,11 @@
     (apply 'concat result)))
 
 
-(defun cmap-render-nodes (nodes)
-  (s-join "\n" (mapcar 'cmap-render-node nodes)))
+(defun cmap-repr-nodes (nodes)
+  (s-join "\n" (mapcar 'cmap-repr-node nodes)))
 
 
-(defun cmap-render-edge (edge)
+(defun cmap-repr-edge (edge)
   (let ((result nil))
     (add-to-list 'result (format "%s -> %s"
                                  (car edge)
@@ -47,8 +47,8 @@
     (apply 'concat result)))
 
 
-(defun cmap-render-edges (edges)
-  (s-join "\n" (mapcar 'cmap-render-edge edges)))
+(defun cmap-repr-edges (edges)
+  (s-join "\n" (mapcar 'cmap-repr-edge edges)))
 
 
 (provide 'el-cmap)
