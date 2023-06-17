@@ -21,4 +21,8 @@
     (apply 'concat result)))
 
 
+(defun cmap-render-nodes (nodes)
+  (s-join "\n" (mapcar 'cmap-render-node nodes)))
+
+
 (provide 'el-cmap)

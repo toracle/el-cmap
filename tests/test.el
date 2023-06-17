@@ -41,6 +41,11 @@
                  "node_a [label=\"Node A\"];")))
 
 
+(ert-deftest render-cmap-render-nodes ()
+  (should (equal (cmap-render-nodes '(("node_a") ("node_b")))
+                 "node_a;\nnode_b;")))
+
+
 ;; (ert-deftest node-isolated-graph ()
 ;;   (should (equal (cmap-graph-to-dot '(:digraph (:nodes (("node_1_id" "Node 1")
 ;;                                                    ("node_2_id" "Node 2")))))
