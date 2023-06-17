@@ -25,4 +25,21 @@
   (s-join "\n" (mapcar 'cmap-render-node nodes)))
 
 
+(defun cmap-render-edge (edge)
+  (let ((result nil))
+    (add-to-list 'result (format "%s -> %s"
+                                 (car edge)
+                                 (car (cdr edge))))
+    (when (equal (length edge) 3)
+      (add-to-list 'result " ")
+      (add-to-list 'result (format "[label=\"%s\"]" (car (last edge)))))
+    (add-to-list 'result ";")
+    (setq result (reverse result))
+    (apply 'concat result)))
+
+
+(defun cmap-render-edges (edges)
+  (s-join "\n" (mapcar 'cmap-render-edge edges)))
+
+
 (provide 'el-cmap)
