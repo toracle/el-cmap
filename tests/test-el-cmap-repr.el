@@ -38,4 +38,10 @@
                                                         ("node_2_id" "Node 2")))))
                  "digraph {\nnode_1_id [label=\"Node 1\"];\nnode_2_id [label=\"Node 2\"];\n\n}\n")))
 
+
+(ert-deftest repr-edge-only-graph ()
+  (should (equal (cmap-repr-digraph '(:digraph (:edges (("node_1_id" "node_2_id")))))
+                 "digraph {\n\nnode_1_id -> node_2_id;\n}\n")))
+
+
 (provide 'test-el-cmap-repr)
