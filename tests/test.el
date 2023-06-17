@@ -29,11 +29,6 @@
       )
 
 
-(ert-deftest dummy-graph ()
-  (should (equal (cmap-graph-to-dot nil)
-                 "digraph { }")))
-
-
 (ert-deftest render-cmap-render-node ()
   (should (equal (cmap-render-node '("node_a"))
                  "node_a;"))
@@ -62,10 +57,15 @@
                  "node_a -> node_b [label=\"label1\"];\nnode_b -> node_c [label=\"label2\"];")))
 
 
-;; (ert-deftest node-isolated-graph ()
-;;   (should (equal (cmap-graph-to-dot '(:digraph (:nodes (("node_1_id" "Node 1")
-;;                                                    ("node_2_id" "Node 2")))))
-;;                  "digraph { node_1_id [label=\"Node 1\"];\n node_2_id [label=\"Node 2\"]; }")))
+(ert-deftest render-digraph ()
+  (should (equal (cmap-render-digraph nil)
+                 "digraph {\n\n}\n")))
+
+
+(ert-deftest node-isolated-node-graph ()
+  (should (equal (cmap-render-digraph '(:digraph (:nodes (("node_1_id" "Node 1")
+                                                          ("node_2_id" "Node 2")))))
+                 "digraph {\nnode_1_id [label=\"Node 1\"];\nnode_2_id [label=\"Node 2\"];\n}\n")))
 
 
 (ert t)

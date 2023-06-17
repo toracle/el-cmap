@@ -10,6 +10,15 @@
   `(,id ,label))
 
 
+(defun cmap-render-digraph (graph)
+  (let* ((digraph (plist-get graph :digraph))
+         (nodes (plist-get digraph :nodes))
+         (edges (plist-get digraph :edges)))
+    (format "digraph {\n%s\n%s}\n"
+            (cmap-render-nodes nodes)
+            (cmap-render-edges edges))))
+
+
 (defun cmap-render-node (node)
   (let ((result nil))
     (add-to-list 'result (format (car node) "%s"))
