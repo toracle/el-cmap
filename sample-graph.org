@@ -1,5 +1,7 @@
-#+BEGIN_SRC dot :file sample-graph.png
-  digraph {
+#+BEGIN_SRC dot :file sample-graph.png :cmd fdp
+  digraph Map {
+      K=1;
+
       node [shape=record, fillcolor="#eeeeee", style="rounded,filled", fontname="Liberation Serif"];
       edge [fontname="Liberation Serif", splines=true, fontsize=12, fontcolor="#777777"];
 
@@ -12,6 +14,8 @@
       "strength" -> "motivator" [label="as a"];
       "strength" -> "organizer" [label="as a"];
       "strength" -> "problem-solver" [label="as a"];
+      "process" -> "system dynamics" [label="has character of"];
+      "system dynamics" -> "delay effect" [label="has"];
   }
 #+END_SRC
 
