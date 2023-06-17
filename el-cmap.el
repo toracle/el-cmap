@@ -8,10 +8,4 @@
   "digraph { }")
 
 
-(defun cmap-node (id &optional label)
-  `(,id ,label))
-
-
-
-
 (provide 'el-cmap)
