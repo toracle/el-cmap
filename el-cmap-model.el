@@ -44,13 +44,15 @@
   (let* ((digraph (plist-get graph :digraph))
          (nodes (plist-get digraph :nodes))
          (edges (plist-get digraph :edges))
-         (node-a-id (car edge))
-         (node-b-id (car (cdr edge))))
+         (edge-id (car edge))
+         (node-a-id (cadr edge))
+         (node-b-id (caddr edge)))
     
     (unless (cmap-get-node graph node-a-id)
       (cmap-add-node graph (cmap-node nil node-a-id)))
     (unless (cmap-get-node graph node-b-id)
       (cmap-add-node graph (cmap-node nil node-b-id)))
+
     (plist-put digraph :edges (add-to-list 'edges edge))
     graph))
 

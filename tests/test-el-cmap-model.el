@@ -23,10 +23,10 @@
 
 (ert-deftest cmap-add-edge ()
   (let ((graph (cmap-init-graph)))
-    (should (equal (cmap-add-edge graph '("node_a" "node_b"))
+    (should (equal (cmap-add-edge graph (cmap-edge "node_a" "node_b" nil "edge-a"))
                    (list :config nil
                          :digraph (list :nodes '(("node_b") ("node_a"))
-                                        :edges '(("node_a" "node_b"))))))))
+                                        :edges '(("edge-a" "node_a" "node_b" nil))))))))
 
 
 (provide 'test-el-cmap-model)

@@ -8,11 +8,13 @@
 
 
 (defun cmap-repr-node (node)
-  (let ((result nil))
-    (add-to-list 'result (format (car node) "%s"))
+  (let ((result nil)
+        (node-id (car node))
+        (node-properties (cdr node)))
+    (add-to-list 'result (format node-id "%s"))
     (when (cdr node)
       (add-to-list 'result " ")
-      (add-to-list 'result (format "[label=\"%s\"]" (car (cdr node)))))
+      (add-to-list 'result (cmap-repr-properties node-properties)))
     (add-to-list 'result ";")
     (setq result (reverse result))
     (apply 'concat result)))
@@ -23,13 +25,18 @@
 
 
 (defun cmap-repr-edge (edge)
-  (let ((result nil))
+  (let* ((result nil)
+         (edge-id (car edge))
+         (edge-extra (cdr edge))
+         (src-node-id (car edge-extra))
+         (tgt-node-id (cadr edge-extra))
+         (properties (caddr edge-extra)))
     (add-to-list 'result (format "%s -> %s"
-                                 (car edge)
-                                 (car (cdr edge))))
-    (when (equal (length edge) 3)
+                                 src-node-id
+                                 tgt-node-id))
+    (when properties
       (add-to-list 'result " ")
-      (add-to-list 'result (format "[label=\"%s\"]" (car (last edge)))))
+      (add-to-list 'result (cmap-repr-properties properties)))
     (add-to-list 'result ";")
     (setq result (reverse result))
     (apply 'concat result)))
@@ -37,5 +44,24 @@
 
 (defun cmap-repr-edges (edges)
   (s-join "\n" (mapcar 'cmap-repr-edge edges)))
+
+
+(defun cmap-repr-properties (properties)
+    "Convert a plist to a string in the format [key=value, ...]."
+  (if properties ; check if properties is not nil
+      (let ((result "[")
+            (properties (copy-sequence properties))) ; make a copy of the properties
+        (while properties
+          (let ((key (pop properties))
+                (value (pop properties)))
+            ;; convert key to a string and remove the leading colon
+            (setq key (substring (symbol-name key) 1))
+            (setq result (concat result
+                                 (format "%s=%S" key value)
+                                 (if properties ", " "")))))
+        (setq result (concat result "]"))
+        result)
+    "")) ; return empty string if properties is nil)
+
 
 (provide 'el-cmap-repr)
