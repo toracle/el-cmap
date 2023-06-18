@@ -29,8 +29,3 @@
                                          ("strength" "problem-solver" "as a")
                                          )))
       )
-
-
-
-
-(ert t)
