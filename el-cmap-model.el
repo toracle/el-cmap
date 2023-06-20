@@ -5,7 +5,7 @@
   (let ((node-id nil)
         (node-label nil))
    (if id (setq node-id id)
-     (setq node-id (org-id-uuid)))
+     (setq node-id (s-replace "-" "_" (org-id-uuid))))
    (unless (plist-get properties :label)
      (plist-put properties :label (format "%s"(gensym "New Node "))))
    `(,node-id . ,properties)))
@@ -14,7 +14,7 @@
 (defun cmap-edge (node-a-id node-b-id &optional properties id)
   (let ((edge-id nil))
     (if id (setq edge-id id)
-      (setq edge-id (org-id-uuid)))
+      (setq edge-id (s-replace "-" "_" (org-id-uuid))))
     `(,edge-id . (,node-a-id ,node-b-id ,properties))))
 
 

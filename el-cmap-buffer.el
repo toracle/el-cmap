@@ -1,3 +1,5 @@
+(require 's)
+
 (defun cmap-buffer-save ()
   (interactive)
   (unless cmap-path
@@ -7,14 +9,17 @@
 
 (defun cmap-buffer-load ()
   (interactive)
-  (setq-local cmap-path (read-file-name "Select a file to save: "))
+  (setq-local cmap-path (read-file-name "Select a file to load: "))
   (setq-local cmap-graph (cmap-load cmap-path))
   (cmap-buffer))
 
 
 (defun cmap-buffer-add-node ()
   (interactive)
-  (read-string "Input node name: "))
+  (let ((node-label (read-string "Input node label: ")))
+    (cmap-add-node cmap-graph
+                   (cmap-node (list :label node-label)))
+    (cmap-buffer)))
 
 
 (defun cmap-buffer-add-edge ()
@@ -29,22 +34,25 @@
   )
 
 
+(defun cmap-buffer-export-graph ()
+  (interactive)
+  (let* ((dot-content (cmap-repr-digraph cmap-graph))
+         (dot-path (cmap-path-with-ext cmap-path "el" "dot"))
+         (image-path (cmap-path-with-ext cmap-path "el" "png")))
+    (with-temp-buffer
+      (insert dot-content)
+      (write-region nil nil dot-path))
+    (call-process "dot"
+                  nil nil "*el-cmap-output*"
+                  "-Kfdp" "-Tpng" dot-path (concat "-o" image-path))))
+
+
 (defun cmap-buffer ()
   (interactive)
   (read-only-mode -1)
   (erase-buffer)
 
   (insert "[")
-  (insert-button "Load"
-                 'follow-link "\C-m"
-                 'action '(lambda (button)
-                            (cmap-buffer-load)))
-  (insert "] [")
-  (insert-button "Save"
-                 'follow-link "\C-m"
-                 'action '(lambda (button)
-                            (cmap-buffer-save)))
-  (insert "] [")
   (insert-button "Add Node"
                  'follow-link "\C-m"
                  'action '(lambda (button)
@@ -68,3 +76,10 @@
   
   (read-only-mode)
   (goto-char 1))
+
+
+(defun cmap-path-with-ext (path old-ext new-ext)
+  (let* ((path-parts (s-split "\\." path))
+         (filename-parts (car (-drop-last 1 path-parts))))
+    (when (equal old-ext (car (last path-parts)))
+      (s-join "." (list filename-parts new-ext)))))
