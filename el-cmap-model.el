@@ -57,4 +57,17 @@
     graph))
 
 
+(defun cmap-save (graph path)
+  (with-temp-buffer
+    (insert (format "%S" graph))
+    (write-region nil nil path)
+    path))
+
+
+(defun cmap-load (path)
+  (with-temp-buffer
+    (insert-file-contents path nil nil nil t)
+    (car (read-from-string (buffer-string)))))
+
+
 (provide 'el-cmap-model)
