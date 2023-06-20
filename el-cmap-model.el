@@ -65,8 +65,9 @@
 
 
 (defun cmap-load (path)
+  "Read concept map data from PATH, and return concept map object."
   (with-temp-buffer
-    (insert-file-contents path nil nil nil t)
+    (insert-file-contents path)
     (car (read-from-string (buffer-string)))))
 
 
