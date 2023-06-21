@@ -2,22 +2,22 @@
 
 (defun cmap-buffer-save ()
   (interactive)
-  (unless cmap-path
-    (setq-local cmap-path (read-file-name "Select a file to save: ")))
-  (cmap-save cmap-graph cmap-path))
+  (unless *cmap-path*
+    (setq-local *cmap-path* (read-file-name "Select a file to save: ")))
+  (cmap-save *cmap-graph* *cmap-path*))
 
 
 (defun cmap-buffer-load ()
   (interactive)
-  (setq-local cmap-path (read-file-name "Select a file to load: "))
-  (setq-local cmap-graph (cmap-load cmap-path))
+  (setq-local *cmap-path* (read-file-name "Select a file to load: "))
+  (setq-local *cmap-graph* (cmap-load *cmap-path*))
   (cmap-buffer))
 
 
 (defun cmap-buffer-add-node ()
   (interactive)
   (let ((node-label (read-string "Input node label: ")))
-    (cmap-add-node cmap-graph
+    (cmap-add-node *cmap-graph*
                    (cmap-node (list :label node-label)))
     (cmap-buffer)))
 
@@ -30,15 +30,17 @@
 
 (defun cmap-buffer-select-focal-node ()
   (interactive)
-  (read-string "Select node: ")
-  )
+  (let ((node-id (cmap-buffer-get-nodes)))
+    (when node-id
+      (setq-local *cmap-focal-node-id* node-id)
+      (cmap-buffer))))
 
 
 (defun cmap-buffer-export-graph ()
   (interactive)
-  (let* ((dot-content (cmap-repr-digraph cmap-graph))
-         (dot-path (cmap-path-with-ext cmap-path "el" "dot"))
-         (image-path (cmap-path-with-ext cmap-path "el" "png")))
+  (let* ((dot-content (cmap-repr-digraph *cmap-graph*))
+         (dot-path (cmap-path-with-ext *cmap-path* "el" "dot"))
+         (image-path (cmap-path-with-ext *cmap-path* "el" "png")))
     (with-temp-buffer
       (insert dot-content)
       (write-region nil nil dot-path))
@@ -46,6 +48,13 @@
                   nil nil "*el-cmap-output*"
                   "-Kfdp" "-Tpng" dot-path (concat "-o" image-path))
     (cmap-mode-viewer image-path)))
+
+
+(defun cmap-buffer-get-nodes ()
+  (interactive)
+  (let* ((nodes (cmap-get-nodes *cmap-graph*)))
+    (helm :sources (helm-make-source "All nodes" 'helm-source-sync
+                     :candidates (mapcar #'car nodes)))))
 
 
 (defun cmap-buffer ()
@@ -73,7 +82,10 @@
   (newline)
   (newline)
 
-  (insert (format "%S" cmap-graph))
+  (insert "Focal Node: " *cmap-focal-node-id*)
+  (newline)
+  (newline)
+  (insert (format "%S" *cmap-graph*))
   
   (read-only-mode)
   (goto-char 1))

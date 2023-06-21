@@ -8,6 +8,7 @@
 
 (defvar *cmap-graph* (cmap-init-graph))
 (defvar *cmap-path* nil)
+(defvar *cmap-focal-node-id* nil)
 
 
 (define-derived-mode el-cmap-mode fundamental-mode

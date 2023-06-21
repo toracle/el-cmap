@@ -1,11 +1,31 @@
 ;; Model manipulation of ConceptMap
 
+(defun cmap-node-id ()
+  (let* ((digraph (plist-get *cmap-graph* :digraph))
+         (nodes (plist-get digraph :nodes))
+         (counter 1))
+    (while (assoc (format "node_%d" counter)
+                  nodes)
+      (setq counter (+ counter 1)))
+    (format "node_%d" counter)))
+
+
+(defun cmap-edge-id ()
+  (let* ((digraph (plist-get *cmap-graph* :digraph))
+         (edges (plist-get digraph :edges))
+         (counter 1))
+    (while (assoc (format "edge_%d" counter)
+                  nodes)
+      (setq counter (+ counter 1)))
+    (format "edge_%d" counter)))
+
+
 (defun cmap-node (&optional properties id)
   "Create a node. Can optionaly give PROPERTIES, especially for give node label. And ID also for debug use."
   (let ((node-id nil)
         (node-label nil))
    (if id (setq node-id id)
-     (setq node-id (s-replace "-" "" (org-id-uuid))))
+     (setq node-id (cmap-node-id)))
    (unless (plist-get properties :label)
      (plist-put properties :label (format "%s"(gensym "New Node "))))
    `(,node-id . ,properties)))
@@ -14,7 +34,7 @@
 (defun cmap-edge (node-a-id node-b-id &optional properties id)
   (let ((edge-id nil))
     (if id (setq edge-id id)
-      (setq edge-id (s-replace "-" "" (org-id-uuid))))
+      (setq edge-id (cmap-edge-id)))
     `(,edge-id . (,node-a-id ,node-b-id ,properties))))
 
 
@@ -38,6 +58,10 @@
          (nodes (plist-get digraph :nodes))
          (node (assoc node-id nodes)))
     node))
+
+
+(defun cmap-get-nodes (graph)
+  (plist-get (plist-get graph :digraph) :nodes))
 
 
 (defun cmap-add-edge (graph edge)
