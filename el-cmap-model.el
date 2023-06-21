@@ -28,6 +28,10 @@
      (setq node-id (cmap-node-id)))
    (unless (plist-get properties :label)
      (plist-put properties :label (format "%s"(gensym "New Node "))))
+   (unless (plist-get properties :shape) (plist-put properties :shape 'record))
+   (unless (plist-get properties :fillcolor) (plist-put properties :fillcolor "#eeeeee"))
+   (unless (plist-get properties :style) (plist-put properties :style "rounded,filled"))
+   (unless (plist-get properties :fontname) (plist-put properties :fontname "Liberation Serif"))
    `(,node-id . ,properties)))
 
 
@@ -35,6 +39,9 @@
   (let ((edge-id nil))
     (if id (setq edge-id id)
       (setq edge-id (cmap-edge-id)))
+    (unless (plist-get properties :fontcolor) (plist-put properties :fontcolor "#777777"))
+    (unless (plist-get properties :splines) (plist-put properties :splines 'true))
+    (unless (plist-get properties :fontname) (plist-put properties :fontname "Liberation Serif"))
     `(,edge-id . (,node-a-id ,node-b-id ,properties))))
 
 
