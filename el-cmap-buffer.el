@@ -24,13 +24,16 @@
 
 (defun cmap-buffer-add-edge ()
   (interactive)
-  (read-string "Input neighbor edge: ")
-  (read-string "Input edge label: "))
+  (let* ((node-id (cmap-buffer-get-node))
+         (edge-label (read-string "Input edge label: ")))
+    (cmap-add-edge *cmap-graph* (cmap-edge *cmap-focal-node-id* node-id
+                                           (list :label edge-label)))
+    (cmap-buffer)))
 
 
 (defun cmap-buffer-select-focal-node ()
   (interactive)
-  (let ((node-id (cmap-buffer-get-nodes)))
+  (let ((node-id (cmap-buffer-get-node)))
     (when node-id
       (setq-local *cmap-focal-node-id* node-id)
       (cmap-buffer))))
@@ -50,7 +53,7 @@
     (cmap-mode-viewer image-path)))
 
 
-(defun cmap-buffer-get-nodes ()
+(defun cmap-buffer-get-node ()
   (interactive)
   (let* ((nodes (cmap-get-nodes *cmap-graph*)))
     (helm :sources (helm-make-source "All nodes" 'helm-source-sync

@@ -2,7 +2,7 @@
   (let* ((digraph (plist-get graph :digraph))
          (nodes (plist-get digraph :nodes))
          (edges (plist-get digraph :edges)))
-    (format "digraph {\n%s\n%s\n}\n"
+    (format "digraph {\nK=1\n%s\n%s\n}\n"
             (cmap-repr-nodes nodes)
             (cmap-repr-edges edges))))
 

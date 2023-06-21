@@ -15,7 +15,7 @@
          (edges (plist-get digraph :edges))
          (counter 1))
     (while (assoc (format "edge_%d" counter)
-                  nodes)
+                  edges)
       (setq counter (+ counter 1)))
     (format "edge_%d" counter)))
 
@@ -71,7 +71,7 @@
          (edge-id (car edge))
          (node-a-id (cadr edge))
          (node-b-id (caddr edge)))
-    
+
     (unless (cmap-get-node graph node-a-id)
       (cmap-add-node graph (cmap-node nil node-a-id)))
     (unless (cmap-get-node graph node-b-id)
@@ -79,6 +79,18 @@
 
     (plist-put digraph :edges (add-to-list 'edges edge))
     graph))
+
+
+(defun cmap-get-edges (graph)
+  (plist-get (plist-get graph :digraph) :edges))
+
+
+(defun cmap-get-in-edges (graph focal-node-id)
+  (let* ((digraph (plist-get graph :digraph))
+         (edges (plist-get digraph :edges)))
+    (-filter '(lambda (e)
+                (take (cdr e) 2))
+             edges)))
 
 
 (defun cmap-save (graph path)
