@@ -9,6 +9,7 @@
 (defvar *cmap-graph* (cmap-init-graph))
 (defvar *cmap-path* nil)
 
+
 (define-derived-mode el-cmap-mode fundamental-mode
   (setq-local mode-name "el-cmap-mode")
 
@@ -19,9 +20,15 @@
   (local-set-key (kbd "n") 'cmap-buffer-add-node)
   (local-set-key (kbd "e") 'cmap-buffer-add-edge)
   (local-set-key (kbd "f") 'cmap-buffer-select-focal-node)
+  (local-set-key (kbd "v") 'cmap-buffer-export-graph)
   (local-set-key (kbd "C-x C-s") 'cmap-buffer-save)
-  (local-set-key (kbd "C-x C-f") 'cmap-buffer-load)
-  (local-set-key (kbd "C-c C-e") 'cmap-buffer-export-graph))
+  (local-set-key (kbd "C-x C-f") 'cmap-buffer-load))
+
+
+(define-derived-mode el-cmap-viewer-mode fundamental-mode
+  (setq-local mode-name "el-cmap-viewer-mdoe")
+
+  (local-set-key (kbd "q") 'quit-window))
 
 
 (defun cmap-mode-main ()
@@ -30,6 +37,16 @@
     (switch-to-buffer "*el-cmap-mode*")
     (el-cmap-mode)
     (cmap-buffer)))
+
+
+(defun cmap-mode-viewer (image-path)
+  (interactive)
+  (with-current-buffer (get-buffer-create "*el-cmap-viewer*")
+    (pop-to-buffer "*el-cmap-viewer*")
+    (el-cmap-viewer-mode)
+    (auto-image-file-mode t)
+    (insert-image-file image-path)
+    (read-only-mode t)))
 
 
 (provide 'el-cmap-mode)
