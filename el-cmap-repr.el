@@ -10,9 +10,10 @@
 (defun cmap-repr-node (node)
   (let ((result nil)
         (node-id (car node))
-        (node-properties (cdr node)))
+        (node-properties (cmap-override-plist (cmap-default-node-properties)
+                                              (cdr node))))
     (add-to-list 'result (format node-id "%s"))
-    (when (cdr node)
+    (when node-properties
       (add-to-list 'result " ")
       (add-to-list 'result (cmap-repr-properties node-properties)))
     (add-to-list 'result ";")
@@ -30,7 +31,8 @@
          (edge-extra (cdr edge))
          (src-node-id (car edge-extra))
          (tgt-node-id (cadr edge-extra))
-         (properties (caddr edge-extra)))
+         (properties (cmap-override-plist (cmap-default-edge-properties)
+                                          (caddr edge-extra))))
     (add-to-list 'result (format "%s -> %s"
                                  src-node-id
                                  tgt-node-id))

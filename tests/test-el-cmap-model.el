@@ -29,4 +29,11 @@
                                         :edges '(("edge-a" "node_a" "node_b" nil))))))))
 
 
+(ert-deftest cmap-override-plist ()
+  (let ((prop nil)
+        (default-prop '(:fontname "Ubuntu")))
+    (should (and (equal (cmap-override-plist default-prop prop)
+                        '(:fontname "Ubuntu"))))))
+
+
 (provide 'test-el-cmap-model)

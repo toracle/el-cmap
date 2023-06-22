@@ -20,28 +20,48 @@
     (format "edge_%d" counter)))
 
 
+(defun cmap-plist-set-default (plst key val)
+  (unless (plist-get plst key val)
+    (plist-put plst key val)))
+
+
+(defun cmap-override-plist (base-lst update-lst)
+  (let ((new-base-lst (copy-sequence base-lst))
+        (new-update-lst (copy-sequence update-lst)))
+    (while new-update-lst
+      (let ((key (pop new-update-lst))
+            (val (pop new-update-lst)))
+        (plist-put new-base-lst key val)))
+    new-base-lst))
+
+
+(defun cmap-default-node-properties ()
+  (list :shape 'record
+        :fillcolor "#eeeeee"
+        :style "rounded,filled"
+        :fontname "Liberation Serif"))
+
+
 (defun cmap-node (&optional properties id)
   "Create a node. Can optionaly give PROPERTIES, especially for give node label. And ID also for debug use."
   (let ((node-id nil)
         (node-label nil))
    (if id (setq node-id id)
      (setq node-id (cmap-node-id)))
-   (unless (plist-get properties :label)
-     (plist-put properties :label (format "%s"(gensym "New Node "))))
-   (unless (plist-get properties :shape) (plist-put properties :shape 'record))
-   (unless (plist-get properties :fillcolor) (plist-put properties :fillcolor "#eeeeee"))
-   (unless (plist-get properties :style) (plist-put properties :style "rounded,filled"))
-   (unless (plist-get properties :fontname) (plist-put properties :fontname "Liberation Serif"))
+   (unless (plist-get properties :label) (plist-put properties :label (format "%s"(gensym "New Node "))))
    `(,node-id . ,properties)))
+
+
+(defun cmap-default-edge-properties ()
+  (list :fontcolor "#777777"
+        :fontname "Liberation Serif"
+        :splines 'true))
 
 
 (defun cmap-edge (node-a-id node-b-id &optional properties id)
   (let ((edge-id nil))
     (if id (setq edge-id id)
       (setq edge-id (cmap-edge-id)))
-    (unless (plist-get properties :fontcolor) (plist-put properties :fontcolor "#777777"))
-    (unless (plist-get properties :splines) (plist-put properties :splines 'true))
-    (unless (plist-get properties :fontname) (plist-put properties :fontname "Liberation Serif"))
     `(,edge-id . (,node-a-id ,node-b-id ,properties))))
 
 
