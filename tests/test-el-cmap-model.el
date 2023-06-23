@@ -33,8 +33,8 @@
     (should (equal (cmap-add-edge graph (cmap-edge "node_id_a" "node_id_b"
                                                    nil "edge-1"))
                    (list :config nil
-                         :digraph (list :nodes '(("node_id_a" (:label "Node A")) ("node_id_b"))
-                                        :edges '(("edge-1" "node_id_a" "node_id_b"))))))))
+                         :digraph (list :nodes '(("node_id_b") ("node_id_a" (:label "Node A")))
+                                        :edges '(("edge-1" "node_id_a" "node_id_b" nil))))))))
 
 
 (ert-deftest cmap-override-plist ()
