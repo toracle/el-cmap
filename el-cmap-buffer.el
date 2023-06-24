@@ -126,6 +126,10 @@
   (insert "]"))
 
 
+(defun cmap-buffer-graph ()
+  (insert (format "%S" *cmap-graph*)))
+
+
 (defun cmap-buffer ()
   (interactive)
   (read-only-mode -1)
@@ -144,8 +148,11 @@
 
   (newline)
   (newline)
-  (insert (format "%S" *cmap-graph*))
-  
+
+  (cmap-buffer-graph)
+
+  (newline)
+
   (read-only-mode)
   (goto-char 1))
 

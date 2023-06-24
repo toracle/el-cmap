@@ -30,8 +30,7 @@
 (define-derived-mode el-cmap-viewer-mode fundamental-mode
   (setq-local mode-name "el-cmap-viewer-mdoe")
 
-  (local-set-key (kbd "q") 'quit-window)
-  (local-set-key (kbd "g") 'cmap-buffer))
+  (local-set-key (kbd "q") 'quit-window))
 
 
 (defun cmap-mode-main ()
