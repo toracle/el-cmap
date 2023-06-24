@@ -23,12 +23,13 @@
   (local-set-key (kbd "E") 'cmap-buffer-add-edge-inward)
   (local-set-key (kbd "f") 'cmap-buffer-select-focal-node)
   (local-set-key (kbd "v") 'cmap-buffer-export-graph)
+  (local-set-key (kbd "t") 'cmap-buffer-toggle-toolbar)
   (local-set-key (kbd "C-x C-s") 'cmap-buffer-save)
   (local-set-key (kbd "C-x C-f") 'cmap-buffer-load))
 
 
 (define-derived-mode el-cmap-viewer-mode fundamental-mode
-  (setq-local mode-name "el-cmap-viewer-mdoe")
+  (setq-local mode-name "el-cmap-viewer-mode")
 
   (local-set-key (kbd "q") 'quit-window))
 
