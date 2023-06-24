@@ -184,7 +184,7 @@
 
 
 (defun cmap-buffer-node-list ()
-    (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
+  (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
     (while nodes
       (let ((node (pop nodes)))
         (insert " * ")
