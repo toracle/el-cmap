@@ -22,6 +22,14 @@
     (cmap-buffer)))
 
 
+(defun cmap-buffer-add-edge-outward ()
+  (cmap-buffer-add-edge))
+
+
+(defun cmap-buffer-add-edge-inward ()
+  (cmap-buffer-add-edge t))
+
+
 (defun cmap-buffer-add-edge (&optional inward)
   (interactive)
   (let* ((node-id (cmap-buffer-get-node))
