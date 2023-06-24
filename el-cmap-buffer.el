@@ -23,10 +23,12 @@
 
 
 (defun cmap-buffer-add-edge-outward ()
+  (interactive)
   (cmap-buffer-add-edge))
 
 
 (defun cmap-buffer-add-edge-inward ()
+  (interactive)
   (cmap-buffer-add-edge t))
 
 
@@ -56,6 +58,8 @@
 
 (defun cmap-buffer-export-graph ()
   (interactive)
+  (unless *cmap-path*
+    (cmap-buffer-save))
   (let* ((dot-content (cmap-repr-digraph *cmap-graph*))
          (dot-path (cmap-path-with-ext *cmap-path* "el" "dot"))
          (image-path (cmap-path-with-ext *cmap-path* "el" "png")))
