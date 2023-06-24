@@ -176,6 +176,15 @@
         (newline)))))
 
 
+(defun cmap-buffer-node-list ()
+    (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
+    (while nodes
+      (let ((node (pop nodes)))
+        (insert " * ")
+        (insert (cmap-model-get-node-prop node :label))
+        (newline)))))
+
+
 (defun cmap-buffer ()
   (interactive)
   (read-only-mode -1)
@@ -202,12 +211,7 @@
   (insert "---") (newline)
   (insert "Nodes:")
   (newline)
-  (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
-    (while nodes
-      (let ((node (pop nodes)))
-        (insert " * ")
-        (insert (cmap-model-get-node-prop node :label))
-        (newline))))
+  (cmap-buffer-node-list)
 
   (read-only-mode)
   (goto-char 1))
