@@ -92,7 +92,7 @@
 
 (defun cmap-buffer-new-graph ()
   (interactive)
-  (setq-local *cmap-graph* (cmap-init-graph))
+  (setq-local *cmap-graph* (cmap-model-init-graph))
   (setq-local *cmap-path* nil)
   (cmap-buffer))
 

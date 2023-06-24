@@ -61,7 +61,7 @@
     (cons edge-id (list node-a-id node-b-id properties))))
 
 
-(defun cmap-init-graph ()
+(defun cmap-model-init-graph ()
   (list :config nil :digraph (list :nodes nil :edges nil)))
 
 

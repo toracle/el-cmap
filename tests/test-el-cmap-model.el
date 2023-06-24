@@ -8,13 +8,13 @@
                  '(:label "Node A"))))
 
 
-(ert-deftest cmap-init-graph ()
-  (should (equal (cmap-init-graph)
+(ert-deftest cmap-model-init-graph ()
+  (should (equal (cmap-model-init-graph)
                  '(:config nil :digraph (:nodes nil :edges nil)))))
 
 
 (ert-deftest cmap-add-node ()
-  (let ((graph (cmap-init-graph)))
+  (let ((graph (cmap-model-init-graph)))
     (should (equal (cmap-add-node graph (cmap-model-node '(:label "Node A") "node_a"))
                    (list :config nil
                          :digraph (list :nodes '(("node_a" . (:label "Node A")))
@@ -22,7 +22,7 @@
 
 
 (ert-deftest cmap-add-edge ()
-  (let ((graph (cmap-init-graph)))
+  (let ((graph (cmap-model-init-graph)))
     (should (equal (cmap-add-edge graph (cmap-model-edge "node_a" "node_b"
                                                          nil "edge-a"))
                    (list :config nil

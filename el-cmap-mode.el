@@ -6,7 +6,7 @@
 
 (require 'el-cmap)
 
-(defvar *cmap-graph* (cmap-init-graph))
+(defvar *cmap-graph* (cmap-model-init-graph))
 (defvar *cmap-path* nil)
 (defvar *cmap-focal-node-id* nil)
 
