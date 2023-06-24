@@ -97,11 +97,7 @@
   (cmap-buffer))
 
 
-(defun cmap-buffer ()
-  (interactive)
-  (read-only-mode -1)
-  (erase-buffer)
-
+(defun cmap-buffer-toolbar ()
   (insert "[")
   (insert-button "New Graph"
                  'follow-link "\C-m"
@@ -123,7 +119,15 @@
                  'follow-link "\C-m"
                  'action '(lambda (button)
                             (cmap-buffer-select-focal-node)))
-  (insert "]")
+  (insert "]"))
+
+
+(defun cmap-buffer ()
+  (interactive)
+  (read-only-mode -1)
+  (erase-buffer)
+
+  (cmap-buffer-toolbar)
 
   (newline)
   (newline)
