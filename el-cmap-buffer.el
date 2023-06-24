@@ -173,16 +173,6 @@
         (insert-button node-label)
         (insert "]")
 
-        (newline))))
-  (insert "---")
-  (newline)
-  (insert "Nodes:")
-  (newline)
-  (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
-    (while nodes
-      (let ((node (pop nodes)))
-        (insert " * ")
-        (insert (cmap-model-get-node-prop node :label))
         (newline)))))
 
 
@@ -196,17 +186,28 @@
   (newline)
 
   (insert "File: ")
-  (insert (format "%s" *cmap-path*))
-  (newline)
+  (insert (format "%s" *cmap-path*)) (newline)
   (newline)
 
-  (insert "---")
+  (insert "---") (newline)
+  (insert "Local Graph:")
   (newline)
   (newline)
 
   (cmap-buffer-graph)
 
   (newline)
+  (newline)
+
+  (insert "---") (newline)
+  (insert "Nodes:")
+  (newline)
+  (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
+    (while nodes
+      (let ((node (pop nodes)))
+        (insert " * ")
+        (insert (cmap-model-get-node-prop node :label))
+        (newline))))
 
   (read-only-mode)
   (goto-char 1))
