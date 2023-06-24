@@ -113,14 +113,14 @@
              edges)))
 
 
-(defun cmap-save (graph path)
+(defun cmap-model-save (graph path)
   (with-temp-buffer
     (insert (format "%S" graph))
     (write-region nil nil path)
     path))
 
 
-(defun cmap-load (path)
+(defun cmap-model-load (path)
   "Read concept map data from PATH, and return concept map object."
   (with-temp-buffer
     (insert-file-contents path)

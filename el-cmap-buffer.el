@@ -4,13 +4,13 @@
   (interactive)
   (unless *cmap-path*
     (setq-local *cmap-path* (read-file-name "Select a file to save: ")))
-  (cmap-save *cmap-graph* *cmap-path*))
+  (cmap-model-save *cmap-graph* *cmap-path*))
 
 
 (defun cmap-buffer-load ()
   (interactive)
   (setq-local *cmap-path* (read-file-name "Select a file to load: "))
-  (setq-local *cmap-graph* (cmap-load *cmap-path*))
+  (setq-local *cmap-graph* (cmap-model-load *cmap-path*))
   (cmap-buffer))
 
 
