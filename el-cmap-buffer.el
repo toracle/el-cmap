@@ -199,8 +199,7 @@
   (newline)
 
   (insert "---") (newline)
-  (insert "Local Graph:")
-  (newline)
+  (insert "Local Graph:") (newline)
   (newline)
 
   (cmap-buffer-graph)
@@ -209,8 +208,7 @@
   (newline)
 
   (insert "---") (newline)
-  (insert "Nodes:")
-  (newline)
+  (insert "Nodes:") (newline)
   (cmap-buffer-node-list)
 
   (read-only-mode)
