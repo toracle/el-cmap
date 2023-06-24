@@ -192,14 +192,23 @@
         (newline)))))
 
 
+(defun cmap-buffer-toggle-toolbar ()
+  (interactive)
+  (if *cmap-toolbar-visible*
+      (setq-local *cmap-toolbar-visible* nil)
+    (setq-local *cmap-toolbar-visible* t))
+  (cmap-buffer))
+
+
 (defun cmap-buffer ()
   (interactive)
   (read-only-mode -1)
   (erase-buffer)
 
-  (cmap-buffer-toolbar)
-  (newline)
-  (newline)
+  (when *cmap-toolbar-visible*
+    (cmap-buffer-toolbar)
+    (newline)
+    (newline))
 
   (insert "File: ")
   (insert (format "%s" *cmap-path*)) (newline)
