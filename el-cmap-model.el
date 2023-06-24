@@ -45,11 +45,11 @@
 (defun cmap-node (&optional properties id)
   "Create a node. Can optionaly give PROPERTIES, especially for give node label. And ID also for debug use."
   (let ((node-id nil)
-        (node-label nil))
+        (node-label nil)
+        (default-node-property (list :label (format "%s"(gensym "New Node ")))))
    (if id (setq node-id id)
      (setq node-id (cmap-node-id)))
-   (unless (plist-get properties :label) (plist-put properties :label (format "%s"(gensym "New Node "))))
-   `(,node-id . ,properties)))
+   (cons node-id (cmap-override-plist default-node-property properties))))
 
 
 (defun cmap-default-edge-properties ()
