@@ -139,7 +139,15 @@
           (insert " ")
           (insert-button (propertize (format "%s" edge-label) 'edge edge))
           (insert " "))
-        (insert "---->")
+        (insert "----> ")
+        (insert "[")
+        (insert-button "X"
+                       'follow-link t
+                       'action '(lambda (button)
+                                  (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
+                                  (cmap-buffer))
+                       'edge edge)
+        (insert "]")
         (newline))))
 
   (newline)
@@ -179,6 +187,14 @@
                                   (cmap-buffer))
                        'node node)
         (insert "]")
+        (insert " [")
+        (insert-button "X"
+                       'follow-link t
+                       'action '(lambda (button)
+                                  (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
+                                  (cmap-buffer))
+                       'edge edge)
+        (insert "]")
 
         (newline)))))
 
@@ -196,7 +212,7 @@
                                   (cmap-buffer))
                        'node node)
         (insert " [")
-        (insert-button "Delete"
+        (insert-button "X"
                        'follow-link t
                        'action '(lambda (button)
                                   (let ((node-id (car (button-get button 'node))))
