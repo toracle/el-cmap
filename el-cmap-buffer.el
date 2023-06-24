@@ -129,9 +129,11 @@
              (edge-label (cmap-model-get-edge-prop edge :label)))
         (insert "    [")
         (insert-button (propertize node-label 'node node)
-                       'follow-link '(lambda (button)
-                                       (setq-local *cmap-focal-node-id* src-node-id)
-                                       (cmap-buffer)))
+                       'follow-link "\C-m"
+                       'action '(lambda (button)
+                                  (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
+                                  (cmap-buffer))
+                       'node node)
         (insert "] ----")
         (when edge-label
           (insert " ")
@@ -147,9 +149,9 @@
                                       *cmap-focal-node-id*))
            (node-label (cmap-model-get-node-prop node :label)))
 
-      (insert "            [")
+      (insert "    ----------> [")
       (insert-button (propertize (format "%s" node-label) 'node node))
-      (insert "]")))
+      (insert "] ---------->")))
 
   (newline)
   (newline)
@@ -170,7 +172,12 @@
           (insert-button (format "%s" edge-label))
           (insert " "))
         (insert "----> [")
-        (insert-button node-label)
+        (insert-button node-label
+                       'follow-link "\C-m"
+                       'action '(lambda (button)
+                                  (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
+                                  (cmap-buffer))
+                       'node node)
         (insert "]")
 
         (newline)))))
