@@ -76,13 +76,13 @@
     graph))
 
 
-(defun cmap-get-node (graph node-id)
-  (let* ((nodes (cmap-get-nodes graph))
+(defun cmap-model-get-node (graph node-id)
+  (let* ((nodes (cmap-model-get-nodes graph))
          (node (assoc node-id nodes 'equal)))
     node))
 
 
-(defun cmap-get-nodes (graph)
+(defun cmap-model-get-nodes (graph)
   (plist-get (plist-get graph :digraph) :nodes))
 
 
@@ -92,9 +92,9 @@
          (node-a-id (cadr edge))
          (node-b-id (caddr edge)))
 
-    (unless (cmap-get-node graph node-a-id)
+    (unless (cmap-model-get-node graph node-a-id)
       (cmap-model-add-node graph (cmap-model-node nil node-a-id)))
-    (unless (cmap-get-node graph node-b-id)
+    (unless (cmap-model-get-node graph node-b-id)
       (cmap-model-add-node graph (cmap-model-node nil node-b-id)))
 
     (plist-put digraph :edges (add-to-list 'edges edge))

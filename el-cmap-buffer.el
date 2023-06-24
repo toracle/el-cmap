@@ -69,15 +69,15 @@
 
 
 ;; define a function that returns a list of node labels
-(defun cmap-get-node-labels (graph)
+(defun cmap-model-get-node-labels (graph)
   (mapcar (lambda (node) (plist-get (cdr node) :label))
-          (cmap-get-nodes graph)))
+          (cmap-model-get-nodes graph)))
 
 
 ;; define a function that returns the node id for a given node label
-(defun cmap-get-node-id (graph label)
+(defun cmap-model-get-node-id (graph label)
   (car (seq-find (lambda (node) (equal label (plist-get (cdr node) :label)))
-                 (cmap-get-nodes graph))))
+                 (cmap-model-get-nodes graph))))
 
 
 ;; define a function that invokes ido-completing-read with the node labels as candidates
@@ -85,9 +85,9 @@
 (defun cmap-buffer-get-node ()
   (interactive)
   (setq-local ido-enable-flex-matching t)
-  (let ((label (ido-completing-read "Select node: " (cmap-get-node-labels *cmap-graph*))))
-    (message "Selected node id: %s" (cmap-get-node-id *cmap-graph* label))
-    (cmap-get-node-id *cmap-graph* label)))
+  (let ((label (ido-completing-read "Select node: " (cmap-model-get-node-labels *cmap-graph*))))
+    (message "Selected node id: %s" (cmap-model-get-node-id *cmap-graph* label))
+    (cmap-model-get-node-id *cmap-graph* label)))
 
 
 (defun cmap-buffer-new-graph ()
@@ -134,8 +134,8 @@
 
   (insert "Focal Node: ")
   (when *cmap-focal-node-id*
-      (insert (plist-get (cdr (cmap-get-node *cmap-graph*
-                                             *cmap-focal-node-id*))
+      (insert (plist-get (cdr (cmap-model-get-node *cmap-graph*
+                                                   *cmap-focal-node-id*))
                          :label)))
 
   (newline)
