@@ -13,9 +13,9 @@
                  '(:config nil :digraph (:nodes nil :edges nil)))))
 
 
-(ert-deftest cmap-add-node ()
+(ert-deftest cmap-model-add-node ()
   (let ((graph (cmap-model-init-graph)))
-    (should (equal (cmap-add-node graph (cmap-model-node '(:label "Node A") "node_a"))
+    (should (equal (cmap-model-add-node graph (cmap-model-node '(:label "Node A") "node_a"))
                    (list :config nil
                          :digraph (list :nodes '(("node_a" . (:label "Node A")))
                                         :edges nil))))))

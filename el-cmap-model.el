@@ -65,7 +65,7 @@
   (list :config nil :digraph (list :nodes nil :edges nil)))
 
 
-(defun cmap-add-node (graph node)
+(defun cmap-model-add-node (graph node)
   (let* ((digraph (plist-get graph :digraph))
          (nodes (plist-get digraph :nodes))
          (node-id (car node))
@@ -93,9 +93,9 @@
          (node-b-id (caddr edge)))
 
     (unless (cmap-get-node graph node-a-id)
-      (cmap-add-node graph (cmap-model-node nil node-a-id)))
+      (cmap-model-add-node graph (cmap-model-node nil node-a-id)))
     (unless (cmap-get-node graph node-b-id)
-      (cmap-add-node graph (cmap-model-node nil node-b-id)))
+      (cmap-model-add-node graph (cmap-model-node nil node-b-id)))
 
     (plist-put digraph :edges (add-to-list 'edges edge))
     graph))
