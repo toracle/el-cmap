@@ -110,7 +110,7 @@
          (all-edges (cmap-model-get-edges graph))
          (node-pos (if inward 2 3)))
     (-filter '(lambda (e)
-                (take (cdr e) node-pos))
+                (-take (cdr e) node-pos))
              all-edges)))
 
 
