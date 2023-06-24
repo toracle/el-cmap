@@ -18,7 +18,7 @@
   (interactive)
   (let ((node-label (read-string "Input node label: ")))
     (cmap-add-node *cmap-graph*
-                   (cmap-node (list :label node-label)))
+                   (cmap-model-node (list :label node-label)))
     (cmap-buffer)))
 
 
@@ -37,9 +37,9 @@
          (edge nil))
 
     (if inward
-        (setq edge (cmap-edge node-id *cmap-focal-node-id*
+        (setq edge (cmap-model-edge node-id *cmap-focal-node-id*
                               (list :label edge-label)))
-      (setq edge (cmap-edge *cmap-focal-node-id* node-id
+      (setq edge (cmap-model-edge *cmap-focal-node-id* node-id
                             (list :label edge-label))))
 
     (cmap-add-edge *cmap-graph* edge)

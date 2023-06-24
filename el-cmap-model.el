@@ -1,6 +1,7 @@
 ;; Model manipulation of ConceptMap
 
-(defun cmap-node-id ()
+
+(defun cmap-model-node-id ()
   (let* ((digraph (plist-get *cmap-graph* :digraph))
          (nodes (plist-get digraph :nodes))
          (counter 1))
@@ -10,7 +11,7 @@
     (format "node_%d" counter)))
 
 
-(defun cmap-edge-id ()
+(defun cmap-model-edge-id ()
   (let* ((digraph (plist-get *cmap-graph* :digraph))
          (edges (plist-get digraph :edges))
          (counter 1))
@@ -18,11 +19,6 @@
                   edges)
       (setq counter (+ counter 1)))
     (format "edge_%d" counter)))
-
-
-(defun cmap-plist-set-default (plst key val)
-  (unless (plist-get plst key val)
-    (plist-put plst key val)))
 
 
 (defun cmap-override-plist (base-lst update-lst)
@@ -42,13 +38,13 @@
         :fontname "Liberation Serif"))
 
 
-(defun cmap-node (&optional properties id)
+(defun cmap-model-node (&optional properties id)
   "Create a node. Can optionaly give PROPERTIES, especially for give node label. And ID also for debug use."
   (let ((node-id nil)
         (node-label nil)
         (default-node-property (list :label (format "%s"(gensym "New Node ")))))
    (if id (setq node-id id)
-     (setq node-id (cmap-node-id)))
+     (setq node-id (cmap-model-node-id)))
    (cons node-id (cmap-override-plist default-node-property properties))))
 
 
@@ -58,10 +54,10 @@
         :splines 'true))
 
 
-(defun cmap-edge (node-a-id node-b-id &optional properties id)
+(defun cmap-model-edge (node-a-id node-b-id &optional properties id)
   (let ((edge-id nil))
     (if id (setq edge-id id)
-      (setq edge-id (cmap-edge-id)))
+      (setq edge-id (cmap-model-edge-id)))
     (cons edge-id (list node-a-id node-b-id properties))))
 
 
@@ -97,9 +93,9 @@
          (node-b-id (caddr edge)))
 
     (unless (cmap-get-node graph node-a-id)
-      (cmap-add-node graph (cmap-node nil node-a-id)))
+      (cmap-add-node graph (cmap-model-node nil node-a-id)))
     (unless (cmap-get-node graph node-b-id)
-      (cmap-add-node graph (cmap-node nil node-b-id)))
+      (cmap-add-node graph (cmap-model-node nil node-b-id)))
 
     (plist-put digraph :edges (add-to-list 'edges edge))
     graph))
