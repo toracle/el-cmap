@@ -58,6 +58,11 @@
   (let* ((nodes (cmap-get-nodes *cmap-graph*)))
     (helm :sources (helm-make-source "All nodes" 'helm-source-sync
                      :candidates (mapcar #'car nodes)))))
+(defun cmap-buffer-new-graph ()
+  (interactive)
+  (setq-local *cmap-graph* (cmap-init-graph))
+  (setq-local *cmap-path* nil)
+  (cmap-buffer))
 
 
 (defun cmap-buffer ()
@@ -66,6 +71,12 @@
   (erase-buffer)
 
   (insert "[")
+  (insert-button "New Graph"
+                 'follow-link "\C-m"
+                 'action '(lambda (button)
+                            (cmap-buffer-new-graph)))
+
+  (insert "] [")
   (insert-button "Add Node"
                  'follow-link "\C-m"
                  'action '(lambda (button)
