@@ -186,9 +186,24 @@
 (defun cmap-buffer-node-list ()
   (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
     (while nodes
-      (let ((node (pop nodes)))
+      (let* ((node (pop nodes))
+             (node-label (cmap-model-get-node-prop node :label)))
         (insert " * ")
-        (insert (cmap-model-get-node-prop node :label))
+        (insert-button node-label
+                       'follow-link "\C-m"
+                       'action '(lambda (button)
+                                  (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
+                                  (cmap-buffer))
+                       'node node)
+        (insert " [")
+        (insert-button "Delete"
+                       'follow-link t
+                       'action '(lambda (button)
+                                  (let ((node-id (car (button-get button 'node))))
+                                    (cmap-model-remove-node *cmap-graph* node-id)
+                                    (cmap-buffer)))
+                       'node node)
+        (insert "]")
         (newline)))))
 
 

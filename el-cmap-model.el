@@ -114,6 +114,26 @@
              all-edges)))
 
 
+(defun cmap-model-remove-node (graph node-id)
+  (let ((digraph (plist-get graph :digraph)))
+    (plist-put digraph :nodes (assoc-delete-all node-id (cmap-model-get-nodes graph) 'equal)))
+
+  (let ((edges (cmap-model-get-edges graph))
+        (edge-id-list nil))
+    (dolist (edge edges)
+      (add-to-list 'edge-id-list (car edge)))
+
+    (dolist (edge-id edge-id-list)
+      (cmap-model-remove-edge graph edge-id))))
+
+
+(defun cmap-model-remove-edge (graph edge-id)
+  (let ((digraph (plist-get graph :digraph))
+        (edges (cmap-model-get-edges graph)))
+    (plist-put graph :digraph (plist-put digraph :edges (assoc-delete-all edge-id edges 'equal)))
+    graph))
+
+
 (defun cmap-model-get-node-labels (graph)
   "Returns a list of node labels of a GRAPH."
   (mapcar (lambda (node) (plist-get (cdr node) :label))
