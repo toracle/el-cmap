@@ -217,6 +217,8 @@
                        'action '(lambda (button)
                                   (let ((node-id (car (button-get button 'node))))
                                     (cmap-model-remove-node *cmap-graph* node-id)
+                                    (when (equal node-id *cmap-focal-node-id*)
+                                      (setq-local *cmap-focal-node-id* (car (first (cmap-model-get-nodes *cmap-graph*)))))
                                     (cmap-buffer)))
                        'node node)
         (insert "]")
