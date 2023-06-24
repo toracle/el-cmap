@@ -21,18 +21,18 @@
                                         :edges nil))))))
 
 
-(ert-deftest cmap-add-edge ()
+(ert-deftest cmap-model-add-edge ()
   (let ((graph (cmap-model-init-graph)))
-    (should (equal (cmap-add-edge graph (cmap-model-edge "node_a" "node_b"
-                                                         nil "edge-a"))
+    (should (equal (cmap-model-add-edge graph (cmap-model-edge "node_a" "node_b"
+                                                               nil "edge-a"))
                    (list :config nil
                          :digraph (list :nodes '(("node_b") ("node_a"))
                                         :edges '(("edge-a" "node_a" "node_b" nil)))))))
   (let ((graph (list :config nil
                      :digraph (list :nodes '(("node_id_a" (:label "Node A")))
                                     :edges nil))))
-    (should (equal (cmap-add-edge graph (cmap-model-edge "node_id_a" "node_id_b"
-                                                         nil "edge-1"))
+    (should (equal (cmap-model-add-edge graph (cmap-model-edge "node_id_a" "node_id_b"
+                                                               nil "edge-1"))
                    (list :config nil
                          :digraph (list :nodes '(("node_id_b") ("node_id_a" (:label "Node A")))
                                         :edges '(("edge-1" "node_id_a" "node_id_b" nil))))))))

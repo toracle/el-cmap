@@ -86,7 +86,7 @@
   (plist-get (plist-get graph :digraph) :nodes))
 
 
-(defun cmap-add-edge (graph edge)
+(defun cmap-model-add-edge (graph edge)
   (let* ((digraph (plist-get graph :digraph))
          (edges (plist-get digraph :edges))
          (node-a-id (cadr edge))
@@ -101,16 +101,17 @@
     graph))
 
 
-(defun cmap-get-edges (graph)
+(defun cmap-model-get-edges (graph)
   (plist-get (plist-get graph :digraph) :edges))
 
 
-(defun cmap-get-in-edges (graph focal-node-id)
+(defun cmap-model-get-directed-edges (graph focal-node-id &optional inward)
   (let* ((digraph (plist-get graph :digraph))
-         (edges (plist-get digraph :edges)))
+         (all-edges (cmap-model-get-edges graph))
+         (node-pos (if inward 2 3)))
     (-filter '(lambda (e)
-                (take (cdr e) 2))
-             edges)))
+                (take (cdr e) node-pos))
+             all-edges)))
 
 
 (defun cmap-model-save (graph path)

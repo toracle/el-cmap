@@ -42,7 +42,7 @@
       (setq edge (cmap-model-edge *cmap-focal-node-id* node-id
                             (list :label edge-label))))
 
-    (cmap-add-edge *cmap-graph* edge)
+    (cmap-model-add-edge *cmap-graph* edge)
     (cmap-buffer)))
 
 
