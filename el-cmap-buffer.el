@@ -60,13 +60,6 @@
     (cmap-mode-viewer image-path)))
 
 
-;; (defun cmap-buffer-get-node ()
-;;   (interactive)
-;;   (let* ((nodes (cmap-get-nodes *cmap-graph*)))
-;;     (helm :sources (helm-make-source "All nodes" 'helm-source-sync
-;;                      :candidates (mapcar #'car nodes)))))
-
-
 ;; define a function that returns a list of node labels
 (defun cmap-get-node-labels (graph)
   (mapcar (lambda (node) (plist-get (cdr node) :label))
