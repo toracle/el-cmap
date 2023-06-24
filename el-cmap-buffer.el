@@ -128,7 +128,7 @@
   (newline)
 
   (insert "Focal Node: ")
-  (unless *cmap-focal-node-id*
+  (when *cmap-focal-node-id*
       (insert (plist-get (cdr (cmap-get-node *cmap-graph*
                                              *cmap-focal-node-id*))
                          :label)))
