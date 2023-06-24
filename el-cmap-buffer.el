@@ -16,9 +16,12 @@
 
 (defun cmap-buffer-add-node ()
   (interactive)
-  (let ((node-label (read-string "Input node label: ")))
-    (cmap-model-add-node *cmap-graph*
-                         (cmap-model-node (list :label node-label)))
+  (let* ((node-label (read-string "Input node label: "))
+         (node (cmap-model-add-node *cmap-graph*
+                                    (cmap-model-node (list :label node-label)))))
+
+    (unless *cmap-focal-node-id*
+      (setq-local *cmap-focal-node-id* (car node)))
     (cmap-buffer)))
 
 
