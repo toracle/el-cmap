@@ -62,7 +62,7 @@
   (let ((edge-id nil))
     (if id (setq edge-id id)
       (setq edge-id (cmap-edge-id)))
-    `(,edge-id . (,node-a-id ,node-b-id ,properties))))
+    (cons edge-id (list node-a-id node-b-id properties))))
 
 
 (defun cmap-init-graph ()
