@@ -106,12 +106,32 @@
 
 
 (defun cmap-model-get-directed-edges (graph focal-node-id &optional inward)
-  (let* ((digraph (plist-get graph :digraph))
-         (all-edges (cmap-model-get-edges graph))
-         (node-pos (if inward 2 3)))
+  "Returns edges of GRAPH, connected to a node FOCAL-NODE-ID. Outlink from FOCAL-NODE-ID if INWARD is nil. Inlink from FOCAL-NODE-ID if INWARD is t"
+  (let* ((all-edges (cmap-model-get-edges graph))
+         (node-func (if inward 'second 'first)))
     (-filter '(lambda (e)
-                (-take (cdr e) node-pos))
+                (equal focal-node-id (funcall node-func (cdr e))))
              all-edges)))
+
+
+(defun cmap-model-get-node-labels (graph)
+  "Returns a list of node labels of a GRAPH."
+  (mapcar (lambda (node) (plist-get (cdr node) :label))
+          (cmap-model-get-nodes graph)))
+
+
+(defun cmap-model-get-node-id (graph label)
+  "Returns the node id for a given node LABEL from a GRAPH."
+  (car (seq-find (lambda (node) (equal label (plist-get (cdr node) :label)))
+                 (cmap-model-get-nodes graph))))
+
+
+(defun cmap-model-get-node-prop (node key)
+  (plist-get (cdr node) key))
+
+
+(defun cmap-model-get-edge-prop (edge key)
+  (plist-get (cadddr edge) key))
 
 
 (defun cmap-model-save (graph path)

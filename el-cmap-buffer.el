@@ -72,18 +72,6 @@
     (cmap-mode-viewer image-path)))
 
 
-;; define a function that returns a list of node labels
-(defun cmap-model-get-node-labels (graph)
-  (mapcar (lambda (node) (plist-get (cdr node) :label))
-          (cmap-model-get-nodes graph)))
-
-
-;; define a function that returns the node id for a given node label
-(defun cmap-model-get-node-id (graph label)
-  (car (seq-find (lambda (node) (equal label (plist-get (cdr node) :label)))
-                 (cmap-model-get-nodes graph))))
-
-
 ;; define a function that invokes ido-completing-read with the node labels as candidates
 ;; and a lambda function that prints the node id as the action
 (defun cmap-buffer-get-node ()
@@ -127,7 +115,59 @@
 
 
 (defun cmap-buffer-graph ()
-  (insert (format "%S" *cmap-graph*)))
+  (let ((edges (copy-sequence (cmap-model-get-directed-edges
+                               *cmap-graph*
+                               *cmap-focal-node-id* t))))
+    (while edges
+      (let* ((edge (pop edges))
+             (src-node-id (cadr edge))
+             (node (cmap-model-get-node *cmap-graph* src-node-id))
+             (node-label (cmap-model-get-node-prop node :label))
+             (edge-label (cmap-model-get-edge-prop edge :label)))
+        (insert "    [")
+        (insert-button node-label)
+        (insert "] ----")
+        (when edge-label
+          (insert " ")
+          (insert-button (format "%s" edge-label))
+          (insert " "))
+        (insert "---->")
+        (newline))))
+
+  (newline)
+
+  (when *cmap-focal-node-id*
+    (let* ((node (cmap-model-get-node *cmap-graph*
+                                      *cmap-focal-node-id*))
+           (node-label (cmap-model-get-node-prop node :label)))
+
+      (insert "            [")
+      (insert-button (format "%s" node-label))
+      (insert "]")))
+
+  (newline)
+  (newline)
+
+  (let ((edges (copy-sequence (cmap-model-get-directed-edges
+                               *cmap-graph*
+                               *cmap-focal-node-id*))))
+    (while edges
+      (let* ((edge (pop edges))
+             (tgt-node-id (caddr edge))
+             (node (cmap-model-get-node *cmap-graph* tgt-node-id))
+             (node-label (cmap-model-get-node-prop node :label))
+             (edge-label (cmap-model-get-edge-prop edge :label)))
+        (insert "    ")
+        (insert "----")
+        (when edge-label
+          (insert " ")
+          (insert-button (format "%s" edge-label))
+          (insert " "))
+        (insert "----> [")
+        (insert-button node-label)
+        (insert "]")
+
+        (newline)))))
 
 
 (defun cmap-buffer ()
@@ -136,16 +176,15 @@
   (erase-buffer)
 
   (cmap-buffer-toolbar)
-
   (newline)
   (newline)
 
-  (insert "Focal Node: ")
-  (when *cmap-focal-node-id*
-      (insert (plist-get (cdr (cmap-model-get-node *cmap-graph*
-                                                   *cmap-focal-node-id*))
-                         :label)))
+  (insert "File: ")
+  (insert (format "%s" *cmap-path*))
+  (newline)
+  (newline)
 
+  (insert "---")
   (newline)
   (newline)
 
