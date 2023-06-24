@@ -37,7 +37,7 @@
 
 (defun cmap-buffer-add-edge (&optional inward)
   (interactive)
-  (let* ((node-id (cmap-buffer-get-node))
+  (let* ((node-id (cmap-buffer-select-node))
          (edge-label (read-string "Input edge label: "))
          (edge nil))
 
@@ -53,7 +53,7 @@
 
 (defun cmap-buffer-select-focal-node ()
   (interactive)
-  (let ((node-id (cmap-buffer-get-node)))
+  (let ((node-id (cmap-buffer-select-node)))
     (when node-id
       (setq-local *cmap-focal-node-id* node-id)
       (cmap-buffer))))
@@ -77,7 +77,7 @@
 
 ;; define a function that invokes ido-completing-read with the node labels as candidates
 ;; and a lambda function that prints the node id as the action
-(defun cmap-buffer-get-node ()
+(defun cmap-buffer-select-node ()
   (interactive)
   (setq-local ido-enable-flex-matching t)
   (let ((label (ido-completing-read "Select node: " (cmap-model-get-node-labels *cmap-graph*))))
