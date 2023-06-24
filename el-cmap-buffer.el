@@ -128,11 +128,14 @@
              (node-label (cmap-model-get-node-prop node :label))
              (edge-label (cmap-model-get-edge-prop edge :label)))
         (insert "    [")
-        (insert-button node-label)
+        (insert-button (propertize node-label 'node node)
+                       'follow-link '(lambda (button)
+                                       (setq-local *cmap-focal-node-id* src-node-id)
+                                       (cmap-buffer)))
         (insert "] ----")
         (when edge-label
           (insert " ")
-          (insert-button (format "%s" edge-label))
+          (insert-button (propertize (format "%s" edge-label) 'edge edge))
           (insert " "))
         (insert "---->")
         (newline))))
@@ -145,7 +148,7 @@
            (node-label (cmap-model-get-node-prop node :label)))
 
       (insert "            [")
-      (insert-button (format "%s" node-label))
+      (insert-button (propertize (format "%s" node-label) 'node node))
       (insert "]")))
 
   (newline)
@@ -170,6 +173,16 @@
         (insert-button node-label)
         (insert "]")
 
+        (newline))))
+  (insert "---")
+  (newline)
+  (insert "Nodes:")
+  (newline)
+  (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
+    (while nodes
+      (let ((node (pop nodes)))
+        (insert " * ")
+        (insert (cmap-model-get-node-prop node :label))
         (newline)))))
 
 
