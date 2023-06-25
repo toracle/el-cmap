@@ -157,24 +157,26 @@
                                       *cmap-focal-node-id*))
            (node-label (cmap-model-get-node-prop node :label)))
 
-      (insert "    ----------> [")
+      (insert "        ----------> [")
       (insert-button (propertize (format "%s" node-label) 'node node))
-      (insert "] ---------->")))
+      (insert "]")))
 
-  (newline)
   (newline)
 
   (let ((edges (copy-sequence (cmap-model-get-directed-edges
                                *cmap-graph*
                                *cmap-focal-node-id*))))
+    (insert "                     ")
+    (insert "|")
+    (newline)
     (while edges
       (let* ((edge (pop edges))
              (tgt-node-id (caddr edge))
              (node (cmap-model-get-node *cmap-graph* tgt-node-id))
              (node-label (cmap-model-get-node-prop node :label))
              (edge-label (cmap-model-get-edge-prop edge :label)))
-        (insert "    ")
-        (insert "----")
+        (insert "                     ")
+        (insert "+---")
         (when edge-label
           (insert " ")
           (insert-button (format "%s" edge-label))
