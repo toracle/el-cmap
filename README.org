@@ -1,1 +1,8 @@
 A ConceptMap authoring tool powered by Emacs.
+
+Create concept maps with Emacs. Choose a main node and connect it to other nodes with links. Each node has a local graph of connected concepts. The whole graph is shown as an image.
+
+The graph data is saved in Elisp format and converted to graphviz dot file for visualization.
+
+#+CAPTION: main screen
+[[./docs/screen.png]]
