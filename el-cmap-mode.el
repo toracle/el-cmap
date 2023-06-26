@@ -18,15 +18,15 @@
   (local-set-key (kbd "q") 'quit-window)
   (local-set-key (kbd "<tab>") 'forward-button)
   (local-set-key (kbd "<backtab>") 'backward-button)
-  (local-set-key (kbd "g") 'cmap-buffer)
-  (local-set-key (kbd "n") 'cmap-buffer-add-node)
-  (local-set-key (kbd "e") 'cmap-buffer-add-edge-outward)
-  (local-set-key (kbd "E") 'cmap-buffer-add-edge-inward)
-  (local-set-key (kbd "f") 'cmap-buffer-select-focal-node)
-  (local-set-key (kbd "v") 'cmap-buffer-export-graph)
-  (local-set-key (kbd "t") 'cmap-buffer-toggle-toolbar)
-  (local-set-key (kbd "C-x C-s") 'cmap-buffer-save)
-  (local-set-key (kbd "C-x C-f") 'cmap-buffer-load))
+  (local-set-key (kbd "g") 'cmap)
+  (local-set-key (kbd "n") 'cmap-add-node)
+  (local-set-key (kbd "e") 'cmap-add-edge-outward)
+  (local-set-key (kbd "E") 'cmap-add-edge-inward)
+  (local-set-key (kbd "f") 'cmap-select-focal-node)
+  (local-set-key (kbd "v") 'cmap-export-graph)
+  (local-set-key (kbd "t") 'cmap-toggle-toolbar)
+  (local-set-key (kbd "C-x C-s") 'cmap-save)
+  (local-set-key (kbd "C-x C-f") 'cmap-load))
 
 
 (define-derived-mode el-cmap-viewer-mode fundamental-mode
@@ -40,7 +40,7 @@
   (with-current-buffer (get-buffer-create "*el-cmap-mode*")
     (switch-to-buffer "*el-cmap-mode*")
     (el-cmap-mode)
-    (cmap-buffer)))
+    (cmap)))
 
 
 (defun cmap-mode-viewer (image-path)

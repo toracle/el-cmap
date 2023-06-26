@@ -1,20 +1,20 @@
 (require 's)
 
-(defun cmap-buffer-save ()
+(defun cmap-save ()
   (interactive)
   (unless *cmap-path*
     (setq-local *cmap-path* (read-file-name "Select a file to save: ")))
   (cmap-model-save *cmap-graph* *cmap-path*))
 
 
-(defun cmap-buffer-load ()
+(defun cmap-load ()
   (interactive)
   (setq-local *cmap-path* (read-file-name "Select a file to load: "))
   (setq-local *cmap-graph* (cmap-model-load *cmap-path*))
-  (cmap-buffer))
+  (cmap))
 
 
-(defun cmap-buffer-add-node ()
+(defun cmap-add-node ()
   (interactive)
   (let* ((node-label (read-string "Input node label: "))
          (node (cmap-model-add-node *cmap-graph*
@@ -22,22 +22,22 @@
 
     (unless *cmap-focal-node-id*
       (setq-local *cmap-focal-node-id* (car node)))
-    (cmap-buffer)))
+    (cmap)))
 
 
-(defun cmap-buffer-add-edge-outward ()
+(defun cmap-add-edge-outward ()
   (interactive)
-  (cmap-buffer-add-edge))
+  (cmap-add-edge))
 
 
-(defun cmap-buffer-add-edge-inward ()
+(defun cmap-add-edge-inward ()
   (interactive)
-  (cmap-buffer-add-edge t))
+  (cmap-add-edge t))
 
 
-(defun cmap-buffer-add-edge (&optional inward)
+(defun cmap-add-edge (&optional inward)
   (interactive)
-  (let* ((node-id (cmap-buffer-select-node))
+  (let* ((node-id (cmap-select-node))
          (edge-label (read-string "Input edge label: "))
          (edge nil))
 
@@ -48,21 +48,21 @@
                             (list :label edge-label))))
 
     (cmap-model-add-edge *cmap-graph* edge)
-    (cmap-buffer)))
+    (cmap)))
 
 
-(defun cmap-buffer-select-focal-node ()
+(defun cmap-select-focal-node ()
   (interactive)
-  (let ((node-id (cmap-buffer-select-node)))
+  (let ((node-id (cmap-select-node)))
     (when node-id
       (setq-local *cmap-focal-node-id* node-id)
-      (cmap-buffer))))
+      (cmap))))
 
 
-(defun cmap-buffer-export-graph ()
+(defun cmap-export-graph ()
   (interactive)
   (unless *cmap-path*
-    (cmap-buffer-save))
+    (cmap-save))
   (let* ((dot-content (cmap-repr-digraph *cmap-graph*))
          (dot-path (cmap-path-with-ext *cmap-path* "el" "dot"))
          (image-path (cmap-path-with-ext *cmap-path* "el" "png")))
@@ -77,7 +77,7 @@
 
 ;; define a function that invokes ido-completing-read with the node labels as candidates
 ;; and a lambda function that prints the node id as the action
-(defun cmap-buffer-select-node ()
+(defun cmap-select-node ()
   (interactive)
   (setq-local ido-enable-flex-matching t)
   (let ((label (ido-completing-read "Select node: " (cmap-model-get-node-labels *cmap-graph*))))
@@ -85,39 +85,39 @@
     (cmap-model-get-node-id *cmap-graph* label)))
 
 
-(defun cmap-buffer-new-graph ()
+(defun cmap-new-graph ()
   (interactive)
   (setq-local *cmap-graph* (cmap-model-init-graph))
   (setq-local *cmap-path* nil)
-  (cmap-buffer))
+  (cmap))
 
 
-(defun cmap-buffer-toolbar ()
+(defun cmap-toolbar ()
   (insert "[")
   (insert-button "New Graph"
                  'follow-link "\C-m"
                  'action '(lambda (button)
-                            (cmap-buffer-new-graph)))
+                            (cmap-new-graph)))
 
   (insert "] [")
   (insert-button "Add Node"
                  'follow-link "\C-m"
                  'action '(lambda (button)
-                            (cmap-buffer-add-node)))
+                            (cmap-add-node)))
   (insert "] [")
   (insert-button "Add Edge"
                  'follow-link "\C-m"
                  'action '(lambda (button)
-                            (cmap-buffer-add-edge)))
+                            (cmap-add-edge)))
   (insert "] [")
   (insert-button "Select Focal Node"
                  'follow-link "\C-m"
                  'action '(lambda (button)
-                            (cmap-buffer-select-focal-node)))
+                            (cmap-select-focal-node)))
   (insert "]"))
 
 
-(defun cmap-buffer-graph ()
+(defun cmap-graph ()
   (let ((edges (copy-sequence (cmap-model-get-directed-edges
                                *cmap-graph*
                                *cmap-focal-node-id* t))))
@@ -132,7 +132,7 @@
                        'follow-link "\C-m"
                        'action '(lambda (button)
                                   (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
-                                  (cmap-buffer))
+                                  (cmap))
                        'node node)
         (insert "] ----")
         (when edge-label
@@ -145,7 +145,7 @@
                        'follow-link t
                        'action '(lambda (button)
                                   (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
-                                  (cmap-buffer))
+                                  (cmap))
                        'edge edge)
         (insert "]")
         (newline))))
@@ -186,7 +186,7 @@
                        'follow-link "\C-m"
                        'action '(lambda (button)
                                   (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
-                                  (cmap-buffer))
+                                  (cmap))
                        'node node)
         (insert "]")
         (insert " [")
@@ -194,14 +194,14 @@
                        'follow-link t
                        'action '(lambda (button)
                                   (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
-                                  (cmap-buffer))
+                                  (cmap))
                        'edge edge)
         (insert "]")
 
         (newline)))))
 
 
-(defun cmap-buffer-node-list ()
+(defun cmap-node-list ()
   (let ((nodes (copy-sequence (cmap-model-get-nodes *cmap-graph*))))
     (while nodes
       (let* ((node (pop nodes))
@@ -211,7 +211,7 @@
                        'follow-link "\C-m"
                        'action '(lambda (button)
                                   (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
-                                  (cmap-buffer))
+                                  (cmap))
                        'node node)
         (insert " [")
         (insert-button "X"
@@ -221,27 +221,27 @@
                                     (cmap-model-remove-node *cmap-graph* node-id)
                                     (when (equal node-id *cmap-focal-node-id*)
                                       (setq-local *cmap-focal-node-id* (car (first (cmap-model-get-nodes *cmap-graph*)))))
-                                    (cmap-buffer)))
+                                    (cmap)))
                        'node node)
         (insert "]")
         (newline)))))
 
 
-(defun cmap-buffer-toggle-toolbar ()
+(defun cmap-toggle-toolbar ()
   (interactive)
   (if *cmap-toolbar-visible*
       (setq-local *cmap-toolbar-visible* nil)
     (setq-local *cmap-toolbar-visible* t))
-  (cmap-buffer))
+  (cmap))
 
 
-(defun cmap-buffer ()
+(defun cmap ()
   (interactive)
   (read-only-mode -1)
   (erase-buffer)
 
   (when *cmap-toolbar-visible*
-    (cmap-buffer-toolbar)
+    (cmap-toolbar)
     (newline)
     (newline))
 
@@ -253,14 +253,14 @@
   (insert "Local Graph:") (newline)
   (newline)
 
-  (cmap-buffer-graph)
+  (cmap-graph)
 
   (newline)
   (newline)
 
   (insert "---") (newline)
   (insert "Nodes:") (newline)
-  (cmap-buffer-node-list)
+  (cmap-node-list)
 
   (read-only-mode)
   (goto-char 1))
