@@ -1,5 +1,5 @@
 (require 'el-cmap-model)
-(require 'el-cmap-buffer)
+(require 'el-cmap-repr)
 
 
 (defun cmap-toolbar ()

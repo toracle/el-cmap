@@ -1,5 +1,6 @@
 (require 's)
 (require 'el-cmap-model)
+(require 'el-cmap-render)
 
 
 (defun cmap-save ()
