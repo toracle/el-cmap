@@ -4,7 +4,7 @@
 
 ;;; Code:
 
-(require 'el-cmap)
+(require 'el-cmap-buffer)
 
 (defvar *cmap-graph* (cmap-model-init-graph))
 (defvar *cmap-path* nil)
