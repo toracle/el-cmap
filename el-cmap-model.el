@@ -121,7 +121,11 @@
   (let ((edges (cmap-model-get-edges graph))
         (edge-id-list nil))
     (dolist (edge edges)
-      (add-to-list 'edge-id-list (car edge)))
+      (let ((src-node-id (cadr edge))
+            (tgt-node-id (caddr edge)))
+        (when (or (equal node-id src-node-id)
+                  (equal node-id tgt-node-id))
+          (add-to-list 'edge-id-list (car edge)))))
 
     (dolist (edge-id edge-id-list)
       (cmap-model-remove-edge graph edge-id))))
