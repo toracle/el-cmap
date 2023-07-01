@@ -7,7 +7,7 @@ EMACS_ERT_SFX = --funcall=ert-run-tests-batch-and-exit
 ERT_TESTS := $(filter-out ert-%,$(wildcard *.el))
 
 test:
-	$(EMACS_ERT_PFX) $(addprefix -l ,$(ERT_TESTS)) $(EMACS_ERT_SFX)
+	$(EMACS_ERT_PFX) -L . $(addprefix -l ,$(ERT_TESTS)) $(EMACS_ERT_SFX)
 
 docker-test:
 	docker run -v $(shell pwd):/opt silex/emacs:27.2-ci-cask sh -c "cd /opt; make"
