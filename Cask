@@ -3,7 +3,7 @@
 (source gnu)
 (source melpa)
 
-(package "el-cmap" "0.1.0" "ConceptMap mode")
+(package "cmap-mode" "0.1.0" "ConceptMap mode")
 
 (files "*.el")
 
