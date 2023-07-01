@@ -1,5 +1,7 @@
 ;; Model manipulation of ConceptMap
 
+(require 'dash)
+
 
 (defun cmap-model-node-id ()
   (let* ((digraph (plist-get *cmap-graph* :digraph))
