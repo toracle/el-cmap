@@ -7,6 +7,13 @@
             (cmap-repr-edges edges))))
 
 
+(defun cmap-default-node-properties ()
+  (list :shape 'record
+        :fillcolor "#eeeeee"
+        :style "rounded,filled"
+        :fontname "Liberation Serif"))
+
+
 (defun cmap-repr-node (node)
   (let ((result nil)
         (node-id (car node))
@@ -23,6 +30,12 @@
 
 (defun cmap-repr-nodes (nodes)
   (s-join "\n" (mapcar 'cmap-repr-node nodes)))
+
+
+(defun cmap-default-edge-properties ()
+  (list :fontcolor "#777777"
+        :fontname "Liberation Serif"
+        :splines 'curved))
 
 
 (defun cmap-repr-edge (edge)

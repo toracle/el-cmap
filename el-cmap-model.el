@@ -43,13 +43,6 @@
     new-base-lst))
 
 
-(defun cmap-default-node-properties ()
-  (list :shape 'record
-        :fillcolor "#eeeeee"
-        :style "rounded,filled"
-        :fontname "Liberation Serif"))
-
-
 (defun cmap-model-node (&optional properties id)
   "Create a node. Can optionaly give PROPERTIES, especially for give node label. And ID also for debug use."
   (let ((node-id nil)
@@ -58,12 +51,6 @@
    (if id (setq node-id id)
      (setq node-id (cmap-model-node-id)))
    (cons node-id (cmap-override-plist default-node-property properties))))
-
-
-(defun cmap-default-edge-properties ()
-  (list :fontcolor "#777777"
-        :fontname "Liberation Serif"
-        :splines 'true))
 
 
 (defun cmap-model-edge (node-a-id node-b-id &optional properties id)
