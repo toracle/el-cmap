@@ -74,7 +74,7 @@
       (write-region nil nil dot-path))
     (call-process "dot"
                   nil nil "*el-cmap-output*"
-                  "-Kfdp" "-Tpng" dot-path (concat "-o" image-path))
+                  "-Kdot" "-Tpng" dot-path (concat "-o" image-path))
     (cmap-mode-viewer image-path)))
 
 
