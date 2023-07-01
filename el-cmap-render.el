@@ -70,9 +70,10 @@
 
 
 (defun cmap-edge-label-max-width (edges)
-  (apply 'max (mapcar '(lambda (edge)
-                         (string-width (cmap-model-get-edge-prop edge :label)))
-                      edges)))
+  (when edges
+   (apply 'max (mapcar '(lambda (edge)
+                          (string-width (cmap-model-get-edge-prop edge :label)))
+                       edges))))
 
 
 (defun cmap-graph ()
