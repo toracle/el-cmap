@@ -6,3 +6,28 @@ The graph data is saved in Elisp format and converted to graphviz dot file for v
 
 #+CAPTION: main screen
 [[./docs/screen.png]]
+
+** Features
+
+ - New graph
+ - Save or load graph data
+ - Add node or edge (inward, outward)
+ - Represent a local graph to navigate to or add a neighbor node/edge
+ - Delete a node or edge
+ - Draw a graph image with graphviz
+
+
+** Key bindings
+
+ * ~C-x C-f~: Open a new graph file
+ * ~v~: Export a dot file and draw a graph image, show it
+ * ~n~: Add a node
+ * ~e~: Add an (outward) edge
+ * ~E~: Add an (inward) edge
+ * ~t~: Toggle a toolbar between visible/invisible
+ * ~f~: Select a node as a focal
+
+
+** To-do [0/1]
+
+ - [ ] Rename a node or edge label
