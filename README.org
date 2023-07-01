@@ -7,6 +7,15 @@ The graph data is saved in Elisp format and converted to graphviz dot file for v
 #+CAPTION: main screen
 [[./docs/screen.png]]
 
+** Getting Started
+
+This mode is not yet uploaded to Melpa. You may clone or download to your local device and add it to ~load-path~.
+
+Invoke ~M-x~ and execute ~(cmap-mode-main)~, it will lead you to an empty cmap graph.
+
+You can add a node with ~n~ key, see a graph image with ~v~ key, it requires you to save graph data before render an image.
+
+
 ** Features
 
  - New graph
