@@ -27,6 +27,39 @@
   (insert "]"))
 
 
+(defun cmap-draw-node (node)
+  (let ((node-label (cmap-model-get-node-prop node :label)))
+    (insert "[")
+    (insert-button (propertize node-label 'node node)
+                   'follow-link "\C-m"
+                   'action '(lambda (button)
+                              (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
+                              (cmap))
+                   'node node)
+    (insert "]")))
+
+
+(defun cmap-draw-edge (edge)
+  (let ((edge-label (cmap-model-get-edge-prop edge :label)))
+    (insert "----")
+    (when edge-label
+      (insert " ")
+      (insert-button (propertize (format "%s" edge-label) 'edge edge))
+      (insert " "))
+    (insert "----")))
+
+
+(defun cmap-draw-edge-buttons (edge)
+  (insert "[")
+  (insert-button "X"
+                 'follow-link t
+                 'action '(lambda (button)
+                            (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
+                            (cmap))
+                 'edge edge)
+  (insert "]"))
+
+
 (defun cmap-graph ()
   (let ((edges (copy-sequence (cmap-model-get-directed-edges
                                *cmap-graph*
@@ -34,42 +67,20 @@
     (while edges
       (let* ((edge (pop edges))
              (src-node-id (cadr edge))
-             (node (cmap-model-get-node *cmap-graph* src-node-id))
-             (node-label (cmap-model-get-node-prop node :label))
-             (edge-label (cmap-model-get-edge-prop edge :label)))
-        (insert "    [")
-        (insert-button (propertize node-label 'node node)
-                       'follow-link "\C-m"
-                       'action '(lambda (button)
-                                  (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
-                                  (cmap))
-                       'node node)
-        (insert "] ----")
-        (when edge-label
-          (insert " ")
-          (insert-button (propertize (format "%s" edge-label) 'edge edge))
-          (insert " "))
-        (insert "----> ")
-        (insert "[")
-        (insert-button "X"
-                       'follow-link t
-                       'action '(lambda (button)
-                                  (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
-                                  (cmap))
-                       'edge edge)
-        (insert "]")
+             (node (cmap-model-get-node *cmap-graph* src-node-id)))
+        (insert "    ")
+        (cmap-draw-node node)
+        (insert " ")
+        (cmap-draw-edge edge) (insert "> ") (cmap-draw-edge-buttons edge)
         (newline))))
 
   (newline)
 
   (when *cmap-focal-node-id*
     (let* ((node (cmap-model-get-node *cmap-graph*
-                                      *cmap-focal-node-id*))
-           (node-label (cmap-model-get-node-prop node :label)))
-
-      (insert "        ----------> [")
-      (insert-button (propertize (format "%s" node-label) 'node node))
-      (insert "]")))
+                                      *cmap-focal-node-id*)))
+      (insert "        ----------> ")
+      (cmap-draw-node node)))
 
   (newline)
 
@@ -82,32 +93,10 @@
     (while edges
       (let* ((edge (pop edges))
              (tgt-node-id (caddr edge))
-             (node (cmap-model-get-node *cmap-graph* tgt-node-id))
-             (node-label (cmap-model-get-node-prop node :label))
-             (edge-label (cmap-model-get-edge-prop edge :label)))
+             (node (cmap-model-get-node *cmap-graph* tgt-node-id)))
         (insert "                     ")
-        (insert "+---")
-        (when edge-label
-          (insert " ")
-          (insert-button (format "%s" edge-label))
-          (insert " "))
-        (insert "----> [")
-        (insert-button node-label
-                       'follow-link "\C-m"
-                       'action '(lambda (button)
-                                  (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
-                                  (cmap))
-                       'node node)
-        (insert "]")
-        (insert " [")
-        (insert-button "X"
-                       'follow-link t
-                       'action '(lambda (button)
-                                  (cmap-model-remove-edge *cmap-graph* (car (button-get button 'edge)))
-                                  (cmap))
-                       'edge edge)
-        (insert "]")
-
+        (insert "+") (cmap-draw-edge edge) (insert "> ")
+        (cmap-draw-node node) (insert " ") (cmap-draw-edge-buttons edge)
         (newline)))))
 
 
