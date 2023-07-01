@@ -11,6 +11,18 @@
     (format "node_%d" counter)))
 
 
+(defun cmap-model-node-label ()
+  (let* ((digraph (plist-get *cmap-graph* :digraph))
+         (nodes (plist-get digraph :nodes))
+         (counter 1)
+         )
+    (while (-find '(lambda (node) (equal (plist-get (cdr node) :label)
+                                         (format "New Node %d" counter)))
+                  nodes)
+      (setq counter (+ counter 1)))
+    (format "New Node %d" counter)))
+
+
 (defun cmap-model-edge-id ()
   (let* ((digraph (plist-get *cmap-graph* :digraph))
          (edges (plist-get digraph :edges))
@@ -42,7 +54,7 @@
   "Create a node. Can optionaly give PROPERTIES, especially for give node label. And ID also for debug use."
   (let ((node-id nil)
         (node-label nil)
-        (default-node-property (list :label (format "%s"(gensym "New Node ")))))
+        (default-node-property (list :label (cmap-model-node-label))))
    (if id (setq node-id id)
      (setq node-id (cmap-model-node-id)))
    (cons node-id (cmap-override-plist default-node-property properties))))
