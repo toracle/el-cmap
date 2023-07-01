@@ -88,9 +88,8 @@
         (insert "    ")
         (insert " +")
         (cmap-draw-edge edge edge-label-max-width) (insert " ")
-        (cmap-draw-node node) (insert " ")  (cmap-draw-edge-buttons edge))))
-
-  (newline)
+        (cmap-draw-node node) (insert " ")  (cmap-draw-edge-buttons edge)
+        (newline))))
 
   (when *cmap-focal-node-id*
     (let* ((node (cmap-model-get-node *cmap-graph*
