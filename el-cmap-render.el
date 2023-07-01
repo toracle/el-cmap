@@ -42,7 +42,8 @@
 (defun cmap-draw-edge (edge)
   (let ((edge-label (cmap-model-get-edge-prop edge :label)))
     (insert "----")
-    (when edge-label
+    (when (and edge-label
+               (not (equal edge-label "")))
       (insert " ")
       (insert-button (propertize (format "%s" edge-label) 'edge edge))
       (insert " "))
@@ -69,17 +70,18 @@
              (src-node-id (cadr edge))
              (node (cmap-model-get-node *cmap-graph* src-node-id)))
         (insert "    ")
-        (cmap-draw-node node)
-        (insert " ")
-        (cmap-draw-edge edge) (insert "> ") (cmap-draw-edge-buttons edge)
-        (newline))))
+        (insert " +")
+        (cmap-draw-edge edge) (insert " ")
+        (cmap-draw-node node) (insert " ")  (cmap-draw-edge-buttons edge))))
 
   (newline)
 
   (when *cmap-focal-node-id*
     (let* ((node (cmap-model-get-node *cmap-graph*
                                       *cmap-focal-node-id*)))
-      (insert "        ----------> ")
+      (insert "     |") (newline)
+      (insert "     |") (newline)
+      (insert "     +----> ")
       (cmap-draw-node node)))
 
   (newline)
@@ -87,14 +89,16 @@
   (let ((edges (copy-sequence (cmap-model-get-directed-edges
                                *cmap-graph*
                                *cmap-focal-node-id*))))
-    (insert "                     ")
-    (insert "|")
+    (when edges
+      (insert "             |")
+      (newline)
+      (insert "             |"))
     (newline)
     (while edges
       (let* ((edge (pop edges))
              (tgt-node-id (caddr edge))
              (node (cmap-model-get-node *cmap-graph* tgt-node-id)))
-        (insert "                     ")
+        (insert "             ")
         (insert "+") (cmap-draw-edge edge) (insert "> ")
         (cmap-draw-node node) (insert " ") (cmap-draw-edge-buttons edge)
         (newline)))))
