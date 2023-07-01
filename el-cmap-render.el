@@ -39,14 +39,22 @@
     (insert "]")))
 
 
-(defun cmap-draw-edge (edge)
-  (let ((edge-label (cmap-model-get-edge-prop edge :label)))
+(defun cmap-draw-edge (edge &optional label-width)
+  (let* ((edge-label (cmap-model-get-edge-prop edge :label))
+         (edge-label-width (string-width edge-label))
+         (width-diff (when label-width (- label-width edge-label-width)))
+         (label-exist (and edge-label (not (equal edge-label "")))))
     (insert "----")
-    (when (and edge-label
-               (not (equal edge-label "")))
+    (when label-exist
       (insert " ")
       (insert-button (propertize (format "%s" edge-label) 'edge edge))
       (insert " "))
+    (when width-diff
+      (while (> width-diff 0)
+        (insert "-")
+        (setq-local width-diff (- width-diff 1))))
+    (when (not label-exist)
+      (insert "--"))
     (insert "----")))
 
 
@@ -61,17 +69,24 @@
   (insert "]"))
 
 
+(defun cmap-edge-label-max-width (edges)
+  (apply 'max (mapcar '(lambda (edge)
+                         (string-width (cmap-model-get-edge-prop edge :label)))
+                      edges)))
+
+
 (defun cmap-graph ()
-  (let ((edges (copy-sequence (cmap-model-get-directed-edges
-                               *cmap-graph*
-                               *cmap-focal-node-id* t))))
+  (let* ((edges (copy-sequence (cmap-model-get-directed-edges
+                                *cmap-graph*
+                                *cmap-focal-node-id* t)))
+         (edge-label-max-width (cmap-edge-label-max-width edges)))
     (while edges
       (let* ((edge (pop edges))
              (src-node-id (cadr edge))
              (node (cmap-model-get-node *cmap-graph* src-node-id)))
         (insert "    ")
         (insert " +")
-        (cmap-draw-edge edge) (insert " ")
+        (cmap-draw-edge edge edge-label-max-width) (insert " ")
         (cmap-draw-node node) (insert " ")  (cmap-draw-edge-buttons edge))))
 
   (newline)
@@ -86,9 +101,10 @@
 
   (newline)
 
-  (let ((edges (copy-sequence (cmap-model-get-directed-edges
+  (let* ((edges (copy-sequence (cmap-model-get-directed-edges
                                *cmap-graph*
-                               *cmap-focal-node-id*))))
+                               *cmap-focal-node-id*)))
+         (edge-label-max-width (cmap-edge-label-max-width edges)))
     (when edges
       (insert "             |")
       (newline)
@@ -99,7 +115,7 @@
              (tgt-node-id (caddr edge))
              (node (cmap-model-get-node *cmap-graph* tgt-node-id)))
         (insert "             ")
-        (insert "+") (cmap-draw-edge edge) (insert "> ")
+        (insert "+") (cmap-draw-edge edge edge-label-max-width) (insert "> ")
         (cmap-draw-node node) (insert " ") (cmap-draw-edge-buttons edge)
         (newline)))))
 
