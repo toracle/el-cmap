@@ -35,7 +35,7 @@
 (defun cmap-default-edge-properties ()
   (list :fontcolor "#777777"
         :fontname "Liberation Serif"
-        :splines 'curved))
+        :splines 'true))
 
 
 (defun cmap-repr-edge (edge)
