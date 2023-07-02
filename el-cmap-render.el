@@ -30,7 +30,7 @@
 (defun cmap-draw-node (node)
   (let ((node-label (cmap-model-get-node-prop node :label)))
     (insert "[")
-    (insert-button (propertize node-label 'node node)
+    (insert-button node-label
                    'follow-link "\C-m"
                    'action '(lambda (button)
                               (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
@@ -45,16 +45,19 @@
          (width-diff (when label-width (- label-width edge-label-width)))
          (label-exist (and edge-label (not (equal edge-label "")))))
     (insert "----")
-    (when label-exist
-      (insert " ")
-      (insert-button (propertize (format "%s" edge-label) 'edge edge))
-      (insert " "))
+    (insert " ")
+    (insert-button (format "%s" (if (and edge-label (not (equal edge-label "")))
+                                    edge-label "..."))
+                   'edge edge)
+    (insert " ")
+
     (when width-diff
       (while (> width-diff 0)
         (insert "-")
         (setq-local width-diff (- width-diff 1))))
-    (when (not label-exist)
-      (insert "--"))
+    (when label-exist
+      ;; suppliment to anonymous labeled edge "...
+      (insert "---"))
     (insert "----")))
 
 
@@ -88,7 +91,7 @@
         (insert "    ")
         (insert " +")
         (cmap-draw-edge edge edge-label-max-width) (insert " ")
-        (cmap-draw-node node) (insert " ")  (cmap-draw-edge-buttons edge)
+        (cmap-draw-node node)
         (newline))))
 
   (when *cmap-focal-node-id*
@@ -116,7 +119,7 @@
              (node (cmap-model-get-node *cmap-graph* tgt-node-id)))
         (insert "             ")
         (insert "+") (cmap-draw-edge edge edge-label-max-width) (insert "> ")
-        (cmap-draw-node node) (insert " ") (cmap-draw-edge-buttons edge)
+        (cmap-draw-node node)
         (newline)))))
 
 
@@ -132,17 +135,6 @@
                                   (setq-local *cmap-focal-node-id* (car (button-get button 'node)))
                                   (cmap))
                        'node node)
-        (insert " [")
-        (insert-button "X"
-                       'follow-link t
-                       'action '(lambda (button)
-                                  (let ((node-id (car (button-get button 'node))))
-                                    (cmap-model-remove-node *cmap-graph* node-id)
-                                    (when (equal node-id *cmap-focal-node-id*)
-                                      (setq-local *cmap-focal-node-id* (car (first (cmap-model-get-nodes *cmap-graph*)))))
-                                    (cmap)))
-                       'node node)
-        (insert "]")
         (newline)))))
 
 (provide 'el-cmap-render)

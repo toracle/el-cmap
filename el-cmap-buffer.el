@@ -62,6 +62,27 @@
       (cmap))))
 
 
+(defun cmap-delete-pos-at ()
+  (interactive)
+  (let* ((button (button-at (point)))
+         (node (when button (button-get button 'node)))
+         (edge (when button (button-get button 'edge))))
+    (when button
+      (cond
+       (node
+        (when (y-or-n-p "Really delete the node?")
+          (let ((node-id (car node)))
+            (cmap-model-remove-node *cmap-graph* node-id)
+            (when (equal node-id *cmap-focal-node-id*)
+              (setq-local *cmap-focal-node-id*
+                          (car (first (cmap-model-get-nodes *cmap-graph*)))))
+           (cmap))))
+       (edge
+        (when (y-or-n-p "Really delete the edge?")
+          (cmap-model-remove-edge *cmap-graph* (car edge))
+          (cmap)))))))
+
+
 (defun cmap-export-graph ()
   (interactive)
   (unless *cmap-path*

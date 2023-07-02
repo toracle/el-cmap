@@ -22,6 +22,7 @@
   (local-set-key (kbd "n") 'cmap-add-node)
   (local-set-key (kbd "e") 'cmap-add-edge-outward)
   (local-set-key (kbd "E") 'cmap-add-edge-inward)
+  (local-set-key (kbd "x") 'cmap-delete-pos-at)
   (local-set-key (kbd "f") 'cmap-select-focal-node)
   (local-set-key (kbd "v") 'cmap-export-graph)
   (local-set-key (kbd "t") 'cmap-toggle-toolbar)
