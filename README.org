@@ -33,6 +33,8 @@ You can add a node with ~n~ key, see a graph image with ~v~ key, it requires you
  * ~n~: Add a node
  * ~e~: Add an (outward) edge
  * ~E~: Add an (inward) edge
+ * ~x~: Remove a node or edge at cursor
+ * ~r~: Rename label of a node or edge at cursor
  * ~t~: Toggle a toolbar between visible/invisible
  * ~f~: Select a node as a focal
  * ~TAB~: Step between buttons
