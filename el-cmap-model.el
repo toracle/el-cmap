@@ -159,6 +159,14 @@
   (plist-get (cadddr edge) key))
 
 
+(defun cmap-model-set-node-prop (node key val)
+  (plist-put (cdr node) key val))
+
+
+(defun cmap-model-set-edge-prop (edge key val)
+  (plist-put (cadddr edge) key val))
+
+
 (defun cmap-model-save (graph path)
   (with-temp-buffer
     (insert (format "%S" graph))

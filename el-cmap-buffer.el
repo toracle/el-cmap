@@ -83,6 +83,25 @@
           (cmap)))))))
 
 
+(defun cmap-rename-pos-at ()
+  (interactive)
+  (let* ((button (button-at (point)))
+         (node (when button (button-get button 'node)))
+         (edge (when button (button-get button 'edge))))
+    (when button
+      (cond
+       (node
+        (let ((node-id (car node))
+              (new-node-label (read-string "Rename the node label to: ")))
+          (cmap-model-set-node-prop node :label new-node-label)
+          (cmap)))
+       (edge
+        (let ((edge-id (car edge))
+              (new-edge-label (read-string "Rename the edge label to: ")))
+          (cmap-model-set-edge-prop edge :label new-edge-label)
+          (cmap)))))))
+
+
 (defun cmap-export-graph ()
   (interactive)
   (unless *cmap-path*
