@@ -6,25 +6,6 @@ EMACS_BATCH = $(EMACS) --batch --quick
 TEST_DIR = tests
 SRC_DIR = .
 
-# Dependencies
-DEPS_DIR = deps
-
-.PHONY: test test-model test-repr test-buffer test-enhanced test-pure install-deps clean
-
-# Create deps directory if it doesn't exist
-$(DEPS_DIR):
-	mkdir -p $(DEPS_DIR)
-
-# Install dependencies if needed
-install-deps: $(DEPS_DIR)
-	@echo "Installing dependencies in $(DEPS_DIR)..."
-	@if [ ! -d "$(DEPS_DIR)/s" ]; then \
-		git clone https://github.com/magnars/s.el.git $(DEPS_DIR)/s; \
-	fi
-	@if [ ! -d "$(DEPS_DIR)/dash" ]; then \
-		git clone https://github.com/magnars/dash.el.git $(DEPS_DIR)/dash; \
-	fi
-
 # Set verbose flag
 VERBOSE ?= 0
 ifeq ($(VERBOSE),1)
@@ -33,23 +14,29 @@ else
     V_FLAG=--eval "(setq ert-quiet t)"
 endif
 
+.PHONY: test test-model test-repr test-buffer test-enhanced test-pure install-deps clean
+
+# Install dependencies using Cask
+install-deps:
+	@command -v cask >/dev/null 2>&1 || { echo >&2 "Cask is required. Please install it using instructions from https://github.com/cask/cask"; exit 1; }
+	@echo "Installing dependencies using Cask..."
+	@cask install
+
 # Default target - run all tests
 test: install-deps
-	$(EMACS_BATCH) \
+	@echo "Running all tests..."
+	cask exec $(EMACS_BATCH) \
 		--directory=$(SRC_DIR) \
 		--directory=$(TEST_DIR) \
-		--directory=$(DEPS_DIR)/s \
-		--directory=$(DEPS_DIR)/dash \
 		$(V_FLAG) \
 		--load=el-cmap-test.el
 
 # Run model tests
 test-model: install-deps
-	$(EMACS_BATCH) \
+	@echo "Running model tests..."
+	cask exec $(EMACS_BATCH) \
 		--directory=$(SRC_DIR) \
 		--directory=$(TEST_DIR) \
-		--directory=$(DEPS_DIR)/s \
-		--directory=$(DEPS_DIR)/dash \
 		$(V_FLAG) \
 		--load=ert \
 		--load=el-cmap-model.el \
@@ -58,11 +45,10 @@ test-model: install-deps
 
 # Run representation tests
 test-repr: install-deps
-	$(EMACS_BATCH) \
+	@echo "Running representation tests..."
+	cask exec $(EMACS_BATCH) \
 		--directory=$(SRC_DIR) \
 		--directory=$(TEST_DIR) \
-		--directory=$(DEPS_DIR)/s \
-		--directory=$(DEPS_DIR)/dash \
 		$(V_FLAG) \
 		--load=ert \
 		--load=el-cmap-model.el \
@@ -72,11 +58,10 @@ test-repr: install-deps
 
 # Run buffer tests
 test-buffer: install-deps
-	$(EMACS_BATCH) \
+	@echo "Running buffer tests..."
+	cask exec $(EMACS_BATCH) \
 		--directory=$(SRC_DIR) \
 		--directory=$(TEST_DIR) \
-		--directory=$(DEPS_DIR)/s \
-		--directory=$(DEPS_DIR)/dash \
 		$(V_FLAG) \
 		--load=ert \
 		--load=el-cmap-buffer.el \
@@ -85,11 +70,10 @@ test-buffer: install-deps
 
 # Run enhanced tests only
 test-enhanced: install-deps
-	$(EMACS_BATCH) \
+	@echo "Running enhanced tests..."
+	cask exec $(EMACS_BATCH) \
 		--directory=$(SRC_DIR) \
 		--directory=$(TEST_DIR) \
-		--directory=$(DEPS_DIR)/s \
-		--directory=$(DEPS_DIR)/dash \
 		$(V_FLAG) \
 		--load=ert \
 		--load=cl-lib \
@@ -100,11 +84,10 @@ test-enhanced: install-deps
 
 # Run pure function tests only
 test-pure: install-deps
-	$(EMACS_BATCH) \
+	@echo "Running pure function tests..."
+	cask exec $(EMACS_BATCH) \
 		--directory=$(SRC_DIR) \
 		--directory=$(TEST_DIR) \
-		--directory=$(DEPS_DIR)/s \
-		--directory=$(DEPS_DIR)/dash \
 		$(V_FLAG) \
 		--load=ert \
 		--load=cl-lib \
@@ -117,12 +100,14 @@ test-pure: install-deps
 clean:
 	@echo "Cleaning compiled files..."
 	@find . -name "*.elc" -type f -delete
+	@cask clean-elc
 
-# Remove dependencies
-clean-deps:
-	@echo "Removing dependencies..."
-	@rm -rf $(DEPS_DIR)
+# Clean Cask artifacts
+cask-clean:
+	@echo "Cleaning Cask artifacts..."
+	@cask clean-elc
+	@rm -rf .cask
 
 # Run with Docker (for CI environments)
 docker-test:
-	docker run -v $(shell pwd):/el-cmap --rm silex/emacs:27.2 sh -c "cd /el-cmap && make test"
+	docker run -v $(shell pwd):/el-cmap --rm silex/emacs:27.2-ci-cask sh -c "cd /el-cmap && cask install && make test"

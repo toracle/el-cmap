@@ -22,6 +22,13 @@ usage() {
     exit 1
 }
 
+# Check if Cask is installed
+if ! command -v cask >/dev/null 2>&1; then
+    echo -e "${RED}Cask is required but not installed.${NC}"
+    echo -e "Please install Cask from: https://github.com/cask/cask"
+    exit 1
+fi
+
 TEST_TARGET="test"
 VERBOSE=""
 
@@ -69,11 +76,16 @@ done
 echo -e "${YELLOW}Running ${TEST_TARGET} for el-cmap...${NC}"
 echo ""
 
+# Make sure dependencies are installed
+echo -e "${BLUE}Installing dependencies with Cask...${NC}"
+cask install >/dev/null 2>&1
+
 # Run the tests
 if [ -n "$VERBOSE" ]; then
     make $TEST_TARGET $VERBOSE
 else
-    make $TEST_TARGET $VERBOSE | grep -v "Installing dependencies" | grep -v "emacs --batch"
+    # Filter some of the verbose output for cleaner display
+    make $TEST_TARGET $VERBOSE | grep -v "Running" | grep -v "directory=" | grep -v "cask exec"
 fi
 
 # Check exit status
