@@ -109,9 +109,9 @@
 (defun cmap-model-get-directed-edges (graph focal-node-id &optional inward)
   "Returns edges of GRAPH, connected to a node FOCAL-NODE-ID. Outlink from FOCAL-NODE-ID if INWARD is nil. Inlink from FOCAL-NODE-ID if INWARD is t"
   (let* ((all-edges (cmap-model-get-edges graph))
-         (node-func (if inward 'second 'first)))
-    (-filter '(lambda (e)
-                (equal focal-node-id (funcall node-func (cdr e))))
+         (node-pos (if inward 1 0)))
+    (-filter (lambda (e)
+               (equal focal-node-id (nth (1+ node-pos) e)))
              all-edges)))
 
 

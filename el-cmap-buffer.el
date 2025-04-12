@@ -91,15 +91,22 @@
     (when button
       (cond
        (node
-        (let ((node-id (car node))
-              (new-node-label (read-string "Rename the node label to: ")))
-          (cmap-model-set-node-prop node :label new-node-label)
+        (let* ((node-id (car node))
+               (new-node-label (read-string "Rename the node label to: "))
+               (graph-node (cmap-model-get-node *cmap-graph* node-id)))
+          (cmap-model-set-node-prop graph-node :label new-node-label)
           (cmap)))
        (edge
-        (let ((edge-id (car edge))
-              (new-edge-label (read-string "Rename the edge label to: ")))
-          (cmap-model-set-edge-prop edge :label new-edge-label)
-          (cmap)))))))
+        (let* ((edge-id (car edge))
+               (new-edge-label (read-string "Rename the edge label to: "))
+               (edges (cmap-model-get-edges *cmap-graph*))
+               (graph-edge (assoc edge-id edges 'equal)))
+          (when graph-edge
+            (let ((props (cadddr graph-edge)))
+              (if props
+                  (plist-put (cadddr graph-edge) :label new-edge-label)
+                (setf (cadddr graph-edge) (list :label new-edge-label))))
+            (cmap))))))))
 
 
 (defun cmap-export-graph ()
@@ -175,9 +182,13 @@
 
 
 (defun cmap-path-with-ext (path old-ext new-ext)
+  "Convert a file PATH with extension OLD-EXT to have extension NEW-EXT."
   (let* ((path-parts (s-split "\\." path))
-         (filename-parts (car (-drop-last 1 path-parts))))
-    (when (equal old-ext (car (last path-parts)))
-      (s-join "." (list filename-parts new-ext)))))
+         (ext (car (last path-parts)))
+         (base-path (s-join "." (-drop-last 1 path-parts))))
+    (if (equal old-ext ext)
+        (concat base-path "." new-ext)
+      ;; If extension doesn't match, append new extension anyway
+      (concat path "." new-ext))))
 
 (provide 'el-cmap-buffer)

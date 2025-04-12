@@ -19,7 +19,7 @@
         (node-id (car node))
         (node-properties (cmap-override-plist (cmap-default-node-properties)
                                               (cdr node))))
-    (add-to-list 'result (format node-id "%s"))
+    (add-to-list 'result (format "%s" node-id))
     (when node-properties
       (add-to-list 'result " ")
       (add-to-list 'result (cmap-repr-properties node-properties)))
