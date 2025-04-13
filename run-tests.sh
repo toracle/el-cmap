@@ -12,6 +12,9 @@ usage() {
     echo -e "Options:"
     echo -e "  -h, --help     Show this help message"
     echo -e "  -v, --verbose  Show detailed test output"
+    echo -e "  --with-cask    Force tests to use Cask regardless of environment"
+    echo -e "  --without-cask Force tests to use direct dependencies regardless of environment"
+    echo -e "  --test-both    Run tests with both Cask and direct dependencies"
     echo -e "Available test targets:"
     echo -e "  all            Run all tests (default)"
     echo -e "  model          Run model tests only"
@@ -22,15 +25,18 @@ usage() {
     exit 1
 }
 
-# Check if Cask is installed
-if ! command -v cask >/dev/null 2>&1; then
-    echo -e "${RED}Cask is required but not installed.${NC}"
-    echo -e "Please install Cask from: https://github.com/cask/cask"
-    exit 1
+# Check if Cask is available and inform the user about dependency management
+if command -v cask >/dev/null 2>&1; then
+    echo -e "${BLUE}Using Cask for dependency management${NC}"
+    echo -e "Dependencies will be installed via Cask from package repositories."
+else
+    echo -e "${YELLOW}Cask not found. Using direct dependency installation.${NC}"
+    echo -e "Dependencies will be cloned from GitHub to .deps directory."
 fi
 
 TEST_TARGET="test"
 VERBOSE=""
+CASK_MODE=""
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -40,6 +46,18 @@ while [[ $# -gt 0 ]]; do
             ;;
         -v|--verbose)
             VERBOSE="VERBOSE=1"
+            shift
+            ;;
+        --with-cask)
+            CASK_MODE="test-with-cask"
+            shift
+            ;;
+        --without-cask)
+            CASK_MODE="test-without-cask"
+            shift
+            ;;
+        --test-both)
+            CASK_MODE="test-both"
             shift
             ;;
         model)
@@ -73,28 +91,42 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo -e "${YELLOW}Running ${TEST_TARGET} for el-cmap...${NC}"
-echo ""
+# Check if we're using a specific Cask mode
+if [ -n "$CASK_MODE" ]; then
+    if [ "$CASK_MODE" = "test-both" ]; then
+        echo -e "${YELLOW}Running ${TEST_TARGET} with both Cask and direct dependencies...${NC}"
+        echo -e "${BLUE}This will run the tests twice - first with Cask, then with direct dependencies.${NC}"
+        MAKE_TARGET="test-both"
+    else
+        echo -e "${YELLOW}Running ${TEST_TARGET} with ${CASK_MODE}...${NC}"
+        MAKE_TARGET="$CASK_MODE"
+    fi
+else
+    echo -e "${YELLOW}Running ${TEST_TARGET} for el-cmap...${NC}"
+    MAKE_TARGET="$TEST_TARGET"
+fi
 
-# Make sure dependencies are installed
-echo -e "${BLUE}Installing dependencies with Cask...${NC}"
-cask install >/dev/null 2>&1
+echo ""
 
 # Run the tests
 if [ -n "$VERBOSE" ]; then
-    make $TEST_TARGET $VERBOSE
+    make $MAKE_TARGET $VERBOSE
+    EXIT_STATUS=$?
 else
+    # Capture output to a temporary file to filter
+    TMP_FILE=$(mktemp)
+    make $MAKE_TARGET $VERBOSE > $TMP_FILE
+    EXIT_STATUS=$?
     # Filter some of the verbose output for cleaner display
-    make $TEST_TARGET $VERBOSE | grep -v "Running" | grep -v "directory=" | grep -v "cask exec"
+    cat $TMP_FILE | grep -v "Running" | grep -v "directory=" | grep -v "cask exec" | grep -v "Forcing tests"
+    rm $TMP_FILE
 fi
 
-# Check exit status
-if [ $? -eq 0 ]; then
-    echo ""
+echo ""
+if [ $EXIT_STATUS -eq 0 ]; then
     echo -e "${GREEN}All tests passed successfully!${NC}"
     exit 0
 else
-    echo ""
     echo -e "${RED}Some tests failed. See output above for details.${NC}"
     exit 1
 fi
