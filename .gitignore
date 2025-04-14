@@ -1,1 +1,7 @@
 /.cask/
+/.deps/
+*.elc
+/coverage/
+coverage-report.zip
+coverage-summary.txt
+.coverage-error

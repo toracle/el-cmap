@@ -1,5 +1,9 @@
 A ConceptMap authoring tool powered by Emacs.
 
+#+html: <p>
+#+html: <a href="https://github.com/toracle/el-cmap/actions/workflows/test.yml"><img src="https://github.com/toracle/el-cmap/actions/workflows/test.yml/badge.svg" alt="Build Status"></a>
+#+html: </p>
+
 Create concept maps with Emacs. Choose a main node and connect it to other nodes with links. Each node has a local graph of connected concepts. The whole graph is shown as an image.
 
 The graph data is saved in Elisp format and converted to graphviz dot file for visualization.
@@ -43,3 +47,79 @@ You can add a node with ~n~ key, see a graph image with ~v~ key, it requires you
 ** To-do [0/1]
 
  - [ ] Rename a node or edge label
+
+** Development
+
+*** Running Tests
+
+Tests can be run using the ~run-tests.sh~ script:
+
+#+BEGIN_SRC shell
+  # Run all tests
+  ./run-tests.sh
+  
+  # Run specific test suite
+  ./run-tests.sh model
+  ./run-tests.sh repr
+  ./run-tests.sh buffer
+  ./run-tests.sh enhanced
+  ./run-tests.sh pure
+#+END_SRC
+
+*** Code Coverage
+
+You can run tests with code coverage reporting:
+
+#+BEGIN_SRC shell
+  # Generate coverage reports
+  ./run-tests.sh --coverage
+  
+  # Or directly use the coverage target
+  ./run-tests.sh coverage
+  
+  # Generate coverage with HTML report
+  ./run-tests.sh --coverage --html-report
+  
+  # Or use the combined target
+  ./run-tests.sh html-report
+#+END_SRC
+
+**** Viewing Coverage Reports
+
+***** In Emacs (with line highlighting)
+
+To view coverage in Emacs with gutter indicators:
+
+1. Install cov-mode: ~M-x package-install RET cov RET~
+2. Load the coverage viewer: ~M-x load-file RET path/to/el-cmap/show-coverage.el RET~
+3. Enable coverage overlay: ~M-x el-cmap-coverage-show RET~
+
+This will highlight covered lines in green, uncovered lines in red, and partially covered lines in yellow.
+
+***** HTML Report
+
+Generate an HTML report that can be viewed in any browser:
+
+#+BEGIN_SRC shell
+  # If you have lcov installed
+  genhtml coverage/lcov.info --output-directory coverage/html
+  
+  # Or from Emacs
+  M-x load-file RET path/to/el-cmap/show-coverage.el RET
+  M-x el-cmap-coverage-html RET
+#+END_SRC
+
+The HTML report will be generated in ~coverage/html/index.html~.
+
+***** Summary in Terminal
+
+View a quick summary in the terminal:
+
+#+BEGIN_SRC shell
+  # If you have lcov installed
+  lcov --summary coverage/lcov.info
+#+END_SRC
+
+**** CI Integration
+
+GitHub Actions automatically runs the test suite with coverage on every push and pull request. The coverage report is generated as an artifact that can be downloaded from the GitHub Actions workflow summary page.

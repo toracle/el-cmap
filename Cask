@@ -11,4 +11,6 @@
 (depends-on "dash")
 
 (development
- (depends-on "ert"))
+ (depends-on "ert")
+ (depends-on "undercover")
+ (depends-on "cov"))

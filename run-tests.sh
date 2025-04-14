@@ -15,6 +15,8 @@ usage() {
     echo -e "  --with-cask    Force tests to use Cask regardless of environment"
     echo -e "  --without-cask Force tests to use direct dependencies regardless of environment"
     echo -e "  --test-both    Run tests with both Cask and direct dependencies"
+    echo -e "  --coverage     Run tests with coverage reporting"
+    echo -e "  --html-report  Generate HTML coverage report (implies --coverage)"
     echo -e "Available test targets:"
     echo -e "  all            Run all tests (default)"
     echo -e "  model          Run model tests only"
@@ -22,6 +24,8 @@ usage() {
     echo -e "  buffer         Run buffer tests only"
     echo -e "  enhanced       Run enhanced tests with reduced side effects"
     echo -e "  pure           Run pure functional model tests"
+    echo -e "  coverage       Run tests with coverage reporting"
+    echo -e "  html-report    Run tests with coverage and generate HTML report"
     exit 1
 }
 
@@ -37,6 +41,8 @@ fi
 TEST_TARGET="test"
 VERBOSE=""
 CASK_MODE=""
+COVERAGE=""
+HTML_REPORT=""
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -60,6 +66,14 @@ while [[ $# -gt 0 ]]; do
             CASK_MODE="test-both"
             shift
             ;;
+        --coverage)
+            COVERAGE="1"
+            shift
+            ;;
+        --html-report)
+            HTML_REPORT="1"
+            shift
+            ;;
         model)
             TEST_TARGET="test-model"
             shift
@@ -78,6 +92,17 @@ while [[ $# -gt 0 ]]; do
             ;;
         pure)
             TEST_TARGET="test-pure"
+            shift
+            ;;
+        coverage)
+            TEST_TARGET="test-coverage"
+            COVERAGE="1"
+            shift
+            ;;
+        html-report)
+            TEST_TARGET="test-coverage"
+            COVERAGE="1"
+            HTML_REPORT="1"
             shift
             ;;
         all)
@@ -101,9 +126,18 @@ if [ -n "$CASK_MODE" ]; then
         echo -e "${YELLOW}Running ${TEST_TARGET} with ${CASK_MODE}...${NC}"
         MAKE_TARGET="$CASK_MODE"
     fi
+elif [ -n "$COVERAGE" ] && [ "$TEST_TARGET" != "test-coverage" ]; then
+    echo -e "${YELLOW}Running ${TEST_TARGET} with coverage enabled...${NC}"
+    MAKE_TARGET="test-coverage"
 else
     echo -e "${YELLOW}Running ${TEST_TARGET} for el-cmap...${NC}"
     MAKE_TARGET="$TEST_TARGET"
+fi
+
+# Create coverage directory if needed
+if [ -n "$COVERAGE" ] || [ "$TEST_TARGET" = "test-coverage" ]; then
+    mkdir -p coverage
+    echo -e "${BLUE}Coverage reporting is enabled. Reports will be generated in the coverage directory.${NC}"
 fi
 
 echo ""
@@ -125,6 +159,34 @@ fi
 echo ""
 if [ $EXIT_STATUS -eq 0 ]; then
     echo -e "${GREEN}All tests passed successfully!${NC}"
+    
+    # Display coverage report info if coverage was enabled
+    if [ -n "$COVERAGE" ] || [ "$TEST_TARGET" = "test-coverage" ]; then
+        if [ -f "coverage/lcov.info" ]; then
+            echo -e "${BLUE}Coverage report generated in coverage/lcov.info${NC}"
+            
+            # If lcov is installed, show a summary
+            if command -v lcov >/dev/null 2>&1; then
+                echo -e "${YELLOW}Coverage Summary:${NC}"
+                lcov --summary coverage/lcov.info
+                
+                # Generate HTML report if requested
+                if [ -n "$HTML_REPORT" ]; then
+                    mkdir -p coverage/html
+                    genhtml coverage/lcov.info --output-directory coverage/html
+                    echo -e "${BLUE}HTML report generated in coverage/html/index.html${NC}"
+                fi
+            fi
+            
+            echo -e "${YELLOW}To view coverage in Emacs:${NC}"
+            echo -e "1. Install cov-mode: M-x package-install RET cov RET"
+            echo -e "2. Load the coverage viewer: M-x load-file RET $(pwd)/show-coverage.el RET"
+            echo -e "3. Enable coverage overlay: M-x el-cmap-coverage-show RET"
+        else
+            echo -e "${RED}Coverage report was not generated. Check for errors above.${NC}"
+        fi
+    fi
+    
     exit 0
 else
     echo -e "${RED}Some tests failed. See output above for details.${NC}"

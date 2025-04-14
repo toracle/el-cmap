@@ -27,7 +27,7 @@ else
     V_FLAG=--eval "(setq ert-quiet t)"
 endif
 
-.PHONY: test test-model test-repr test-buffer test-enhanced test-pure clean cask-deps direct-deps test-with-cask test-without-cask test-both docker-test
+.PHONY: test test-model test-repr test-buffer test-enhanced test-pure clean cask-deps direct-deps test-with-cask test-without-cask test-both docker-test test-coverage
 
 # Install dependencies using Cask if available
 $(CASK_DIR): Cask
@@ -238,3 +238,34 @@ test-both: clean test-with-cask clean test-without-cask
 # Docker test environment
 docker-test:
 	docker run -v $(shell pwd):/el-cmap --rm silex/emacs:27.2-ci-cask sh -c "cd /el-cmap && make test"
+
+# Run tests with coverage
+test-coverage: $(DEPS_INSTALLED) clean
+	@echo "Running tests with coverage..."
+	@mkdir -p coverage
+ifdef CASK_AVAILABLE
+	@cask emacs --batch \
+		--directory=$(SRC_DIR) \
+		--directory=$(TEST_DIR) \
+		$(V_FLAG) \
+		--load=run-coverage.el
+else
+	@$(EMACS_BATCH) \
+		--directory=$(SRC_DIR) \
+		--directory=$(TEST_DIR) \
+		--directory=$(DEPS_DIR)/s \
+		--directory=$(DEPS_DIR)/dash \
+		$(V_FLAG) \
+		--load=run-coverage.el
+endif
+	@if [ -f "coverage/lcov.info" ]; then \
+		echo "Coverage report generated in coverage/lcov.info"; \
+		if command -v lcov >/dev/null 2>&1; then \
+			mkdir -p coverage/html; \
+			lcov --summary coverage/lcov.info; \
+			genhtml coverage/lcov.info --output-directory coverage/html; \
+			echo "HTML report generated in coverage/html/index.html"; \
+		fi \
+	else \
+		echo "Coverage report was not generated. Check for errors."; \
+	fi
